@@ -1,5 +1,6 @@
 ﻿using DefaultEcs;
 using OpenTK.Graphics.OpenGL4;
+using OpenTK.Mathematics;
 using ShaderViewer.Component;
 using Zenseless.OpenTK;
 
@@ -10,23 +11,30 @@ namespace ShaderViewer
 		public ShaderDrawSystem(World world)
 		{
 			this.world = world;
-			_uniforms = world.GetEntities().With<Uniform>().AsSet();
 		}
 
 		internal void Draw()
 		{
 			var _shaderProgram = world.Get<ShaderProgram>();
+			var uniforms = world.Get<Uniforms>();
 			_shaderProgram.Bind();
-			foreach(var e in _uniforms.GetEntities())
+			foreach((string name , object objValue) in uniforms.NameValue)
 			{
-				var name = e.Get<Uniform>().Name;
+				var loc = GL.GetUniformLocation(_shaderProgram.Handle, name);
+				if(-1 != loc)
+				{
+					switch(objValue)
+					{
+						case float value: GL.ProgramUniform1(_shaderProgram.Handle, loc, value); break;
+						case Vector2 value: GL.ProgramUniform2(_shaderProgram.Handle, loc, value); break;
+						case Vector3 value: GL.ProgramUniform3(_shaderProgram.Handle, loc, value); break;
+						case Vector4 value: GL.ProgramUniform4(_shaderProgram.Handle, loc, value); break;
+					}
+				}
 			}
-			var resolution = world.Get<Resolution>();
-			_shaderProgram.Uniform("u_resolution", resolution.Value);
 			GL.DrawArrays(PrimitiveType.TriangleStrip, 0, 4);
 		}
 
 		private readonly World world;
-		private readonly EntitySet _uniforms;
 	}
 }

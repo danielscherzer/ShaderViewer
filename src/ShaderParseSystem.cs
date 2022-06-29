@@ -1,7 +1,7 @@
 ﻿using DefaultEcs;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
-using OpenTK.Windowing.Desktop;
+using ShaderViewer.Component;
 using System;
 using System.IO;
 using Zenseless.OpenTK;
@@ -11,10 +11,6 @@ namespace ShaderViewer
 {
 	internal class ShaderParseSystem
 	{
-		private readonly IResourceDirectory resourceDirectory;
-		private readonly World world;
-		private readonly string defaultFragmentSourceCode;
-
 		public ShaderParseSystem(IResourceDirectory resourceDirectory, World world)
 		{
 			this.resourceDirectory = resourceDirectory;
@@ -22,6 +18,7 @@ namespace ShaderViewer
 
 			defaultFragmentSourceCode = resourceDirectory.Resource("checker.frag").OpenText();
 			world.Set(LoadShader(defaultFragmentSourceCode));
+			Parse(defaultFragmentSourceCode);
 		}
 
 		public void Load(string fileName)
@@ -29,33 +26,14 @@ namespace ShaderViewer
 			var shaderSource = File.ReadAllText(fileName);
 			string dir = Path.GetDirectoryName(fileName) ?? "";
 			//shaderSource = GLSLhelper.Transformation.ExpandIncludes(shaderSource, include => File.ReadAllText(Path.Combine(dir, include)));
-			world.Get<ShaderProgram>()?.Dispose();
-			try
-			{
-				world.Set(LoadShader(shaderSource));
-				world.Set("");
-			}
-			catch (ShaderException se)
-			{
-				world.Set(se.Message);
-				world.Set(LoadShader(defaultFragmentSourceCode));
-			}
-
-			var uniforms = GLSLhelper.Extract.Uniforms(GLSLhelper.Transformation.RemoveComments(shaderSource));
-			foreach ((string typeName, string name) in uniforms)
-			{
-				var type = GetType(typeName);
-			}
+			Parse(shaderSource);
 		}
 
-		private ShaderProgram LoadShader(string shaderSource)
-		{
-			var vertex = (ShaderType.VertexShader, resourceDirectory.Resource("screenQuad.vert").OpenText());
-			var fragment = (ShaderType.FragmentShader, shaderSource);
-			return new ShaderProgram().CompileLink(vertex, fragment);
-		}
+		private readonly IResourceDirectory resourceDirectory;
+		private readonly World world;
+		private readonly string defaultFragmentSourceCode;
 
-		private Type? GetType(string typeName)
+		private static Type? GetType(string typeName)
 		{
 			return typeName switch
 			{
@@ -68,6 +46,42 @@ namespace ShaderViewer
 				"mat4" => typeof(Matrix4),
 				_ => Type.GetType(typeName),
 			};
+		}
+
+		private ShaderProgram LoadShader(string shaderSource)
+		{
+			var vertex = (ShaderType.VertexShader, resourceDirectory.Resource("screenQuad.vert").OpenText());
+			var fragment = (ShaderType.FragmentShader, shaderSource);
+			return new ShaderProgram().CompileLink(vertex, fragment);
+		}
+
+		private void Parse(string shaderSource)
+		{
+			world.Get<ShaderProgram>()?.Dispose();
+			try
+			{
+				world.Set(LoadShader(shaderSource));
+				world.Set("");
+			}
+			catch (ShaderException se)
+			{
+				world.Set(se.Message);
+				world.Set(LoadShader(defaultFragmentSourceCode));
+			}
+
+			var uniformDeclaration = GLSLhelper.Extract.Uniforms(GLSLhelper.Transformation.RemoveComments(shaderSource));
+			var uniforms = new Uniforms();
+			foreach ((string typeName, string name) in uniformDeclaration)
+			{
+				var type = GetType(typeName);
+				if (type is null) continue;
+				var instance = Activator.CreateInstance(type);
+				if (instance != null)
+				{
+					uniforms.Set(name, instance);
+				}
+			}
+			world.Set(uniforms);
 		}
 	}
 }
