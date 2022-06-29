@@ -12,17 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Remove="content\DroidSans.ttf" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Remove="content\DroidSans.ttf" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="content\DroidSans.ttf">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
 
   <ItemGroup>
@@ -35,6 +25,12 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="content\DroidSans.ttf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
 
 </Project>

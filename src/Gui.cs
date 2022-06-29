@@ -1,7 +1,10 @@
 ﻿using ImGuiNET;
+using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
+using OpenTK.Windowing.Desktop;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 using System;
+using Zenseless.Resources;
 
 namespace ShaderViewer
 {
@@ -9,9 +12,13 @@ namespace ShaderViewer
 	{
 		private readonly ImGuiController _controller;
 
-		public Gui(Vector2i clientSize)
+		public Gui(GameWindow window, IResourceDirectory resourceDirectory)
 		{
-			_controller = new ImGuiController(clientSize.X, clientSize.Y);
+			Vector2i clientSize = window.ClientSize;
+			using var stream = resourceDirectory.Open("DroidSans.ttf");
+			var buffer = new byte[stream.Length];
+			stream.Read(buffer);
+			_controller = new ImGuiController(clientSize.X, clientSize.Y, buffer);
 			ImGuiIOPtr io = ImGui.GetIO();
 			io.FontGlobalScale = 1f;
 			io.ConfigFlags |= ImGuiConfigFlags.NavEnableKeyboard;
@@ -22,6 +29,10 @@ namespace ShaderViewer
 			style.FrameBorderSize = 1f;
 			style.WindowBorderSize = 3f;
 			style.WindowRounding = 10f;
+
+			window.MouseWheel += args => MouseScroll(args.Offset);
+			window.TextInput += args => PressChar((char)args.Unicode);
+			window.UpdateFrame += args => Update(window.MouseState, window.KeyboardState, (float)args.Time);
 		}
 
 		internal static void MouseScroll(Vector2 offset) => ImGuiController.MouseScroll(offset);
@@ -66,6 +77,7 @@ namespace ShaderViewer
 		internal void Resize(int width, int height)
 		{
 			_controller.WindowResized(width, height);
+			GL.Viewport(0, 0, width, height);
 		}
 	}
 }

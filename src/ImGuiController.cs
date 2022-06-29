@@ -39,7 +39,7 @@ namespace ShaderViewer
 		/// <summary>
 		/// Constructs a new ImGuiController.
 		/// </summary>
-		public ImGuiController(int width, int height)
+		public ImGuiController(int width, int height, byte[] font)
 		{
 			_windowWidth = width;
 			_windowHeight = height;
@@ -57,10 +57,9 @@ namespace ShaderViewer
 			//var font = fonts.AddFontFromFileTTF("Content/DroidSans.ttf", 32); // load from file
 			//io.Fonts.AddFontDefault(); // use default font
 
-			var buffer = File.ReadAllBytes("Content/DroidSans.ttf");
-			GCHandle pinnedArray = GCHandle.Alloc(buffer, GCHandleType.Pinned);
+			GCHandle pinnedArray = GCHandle.Alloc(font, GCHandleType.Pinned);
 			IntPtr pointer = pinnedArray.AddrOfPinnedObject();
-			var font = fonts.AddFontFromMemoryTTF(pointer, buffer.Length, 32);
+			fonts.AddFontFromMemoryTTF(pointer, font.Length, 32);
 			// Do your stuff...
 			pinnedArray.Free();
 

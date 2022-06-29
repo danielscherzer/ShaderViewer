@@ -1,33 +1,36 @@
 ﻿using DefaultEcs;
-using ShaderViewer;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.Desktop;
 using OpenTK.Windowing.GraphicsLibraryFramework;
-using System.IO;
+using ShaderViewer;
+using ShaderViewer.Component;
 using System.Linq;
 using Zenseless.Resources;
-using ShaderViewer.Component;
-using GLSLhelper;
 
 var window = new GameWindow(GameWindowSettings.Default, NativeWindowSettings.Default);
 
 using World world = new();
+var uniformResolution = world.CreateEntity();
+uniformResolution.Set(new Uniform("u_resolution"));
 
 // set window postition/size relative to monitor size
 var info = Monitors.GetMonitorFromWindow(window);
 var monitorSize = new Vector2i(info.HorizontalResolution, info.VerticalResolution);
-window.Size = new Vector2i(2 * monitorSize.X / 5, 4 * monitorSize.Y / 5);
+window.Size = monitorSize / 2;
 window.Location = (monitorSize - window.Size) / 2;
 
-using ShaderDrawSystem view = new(new EmbeddedResourceDirectory(nameof(ShaderViewer) + ".content"), world);
+var resDir = new EmbeddedResourceDirectory(nameof(ShaderViewer) + ".content");
+var shaderLoadSystem = new ShaderParseSystem(resDir, world);
+
+LogDrawSystem logDrawSystem = new(world);
+ShaderDrawSystem shaderDrawSystem = new(world);
+Gui guiDrawSystem = new(window, resDir);
 
 window.FileDrop += args =>
 {
 	var fileName = args.FileNames.First();
 	window.Title = fileName;
-	string dir = Path.GetDirectoryName(fileName) ?? "";
-	//view.SetShader(Transformation.ExpandIncludes(File.ReadAllText(fileName), include => File.ReadAllText(Path.Combine(dir, include))));
-	view.SetShader(File.ReadAllText(fileName));
+	shaderLoadSystem.Load(fileName);
 };
 
 window.KeyDown += args =>
@@ -38,19 +41,13 @@ window.KeyDown += args =>
 	}
 };
 
-Gui gui = new(window.ClientSize);
-
-window.MouseWheel += args => Gui.MouseScroll(args.Offset);
-window.TextInput += args => gui.PressChar((char)args.Unicode);
-
-window.UpdateFrame += args => gui.Update(window.MouseState, window.KeyboardState, (float)args.Time);
-
-window.RenderFrame += _ => view.Draw();
-window.RenderFrame += args => gui.Draw();
+window.RenderFrame += _ => shaderDrawSystem.Draw();
+window.RenderFrame += _ => logDrawSystem.Draw();
+window.RenderFrame += args => guiDrawSystem.Draw();
 window.RenderFrame += _ => window.SwapBuffers();
 
 window.Resize += (window) => world.Set(new Resolution(window.Width, window.Height));
-window.Resize += (window) => view.Resize(window.Width, window.Height);
-window.Resize += (window) => gui.Resize(window.Width, window.Height);
+window.Resize += (window) => uniformResolution.Set(new Vector2(window.Width, window.Height));
+window.Resize += (window) => guiDrawSystem.Resize(window.Width, window.Height);
 
 window.Run();
