@@ -8,18 +8,14 @@ using System.Linq;
 using Zenseless.Resources;
 
 using GameWindow window = new(GameWindowSettings.Default, NativeWindowSettings.Default);
-
 using World world = new();
-
 using SequentialSystem<float> systems = new(
 	new DefaultUniformUpdateSystem(world, window),
 	new ShaderDrawSystem(world),
 	new LogGuiSystem(world),
 	new UniformGuiSystem(world)
 );
-
 var resDir = new EmbeddedResourceDirectory(nameof(ShaderViewer) + ".content");
-Gui guiDrawSystem = new(window, resDir);
 
 ShaderLoadSystem shaderLoadSystem = new(resDir, world);
 shaderLoadSystem.Loaded += fileName => window.Title = fileName;
@@ -29,6 +25,7 @@ if(fileName is not null) shaderLoadSystem.LoadShaderFile(fileName);
 
 window.FileDrop += args => shaderLoadSystem.LoadShaderFile(args.FileNames.First());
 window.RenderFrame += args => systems.Update((float)args.Time);
+Gui guiDrawSystem = new(window, resDir);
 window.RenderFrame += _ => guiDrawSystem.Draw();
 window.RenderFrame += _ => window.SwapBuffers();
 
