@@ -19,14 +19,6 @@ window.Location = (monitorSize - window.Size) / 2;
 
 var resDir = new EmbeddedResourceDirectory(nameof(ShaderViewer) + ".content");
 
-ShaderLoadSystem shaderLoadSystem = new (resDir, world);
-window.FileDrop += args =>
-{
-	var fileName = args.FileNames.First();
-	window.Title = fileName;
-	shaderLoadSystem.LoadShaderFile(fileName);
-};
-
 SequentialSystem<float> drawSystems = new(
 	new DefaultUniformUpdateSystem(world, window),
 	new ShaderDrawSystem(world),
@@ -35,6 +27,14 @@ SequentialSystem<float> drawSystems = new(
 );
 
 Gui guiDrawSystem = new Gui(window, resDir);
+
+ShaderLoadSystem shaderLoadSystem = new(resDir, world);
+window.FileDrop += args =>
+{
+	var fileName = args.FileNames.First();
+	window.Title = fileName;
+	shaderLoadSystem.LoadShaderFile(fileName);
+};
 
 window.KeyDown += args =>
 {

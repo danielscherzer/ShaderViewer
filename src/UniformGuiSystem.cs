@@ -15,7 +15,7 @@ namespace ShaderViewer
 			if (ImGui.Begin("Uniforms", ImGuiWindowFlags.AlwaysAutoResize))
 			{
 				ImGui.DragFloat("input delta", ref delta, 0.005f, 0.005f, float.PositiveInfinity);
-				foreach ((string name, object objValue) in uniforms.NameValue)
+				foreach ((string name, object objValue) in uniforms.Pairs)
 				{
 					switch (objValue)
 					{

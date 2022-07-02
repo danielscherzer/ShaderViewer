@@ -11,18 +11,18 @@ namespace ShaderViewer
 		[Update]
 		private static void Update(in ShaderProgram shaderProgram, in Uniforms uniforms)
 		{
-			shaderProgram.Bind();
-			foreach ((string name, object objValue) in uniforms.NameValue)
+			shaderProgram.Bind(); // because of this bind we can use GL.Uniform* commands
+			foreach ((string name, object objValue) in uniforms.Pairs)
 			{
 				var loc = GL.GetUniformLocation(shaderProgram.Handle, name);
 				if (-1 != loc)
 				{
 					switch (objValue)
 					{
-						case float value: GL.ProgramUniform1(shaderProgram.Handle, loc, value); break;
-						case Vector2 value: GL.ProgramUniform2(shaderProgram.Handle, loc, value); break;
-						case Vector3 value: GL.ProgramUniform3(shaderProgram.Handle, loc, value); break;
-						case Vector4 value: GL.ProgramUniform4(shaderProgram.Handle, loc, value); break;
+						case float value: GL.Uniform1(loc, value); break;
+						case Vector2 value: GL.Uniform2(loc, value); break;
+						case Vector3 value: GL.Uniform3(loc, value); break;
+						case Vector4 value: GL.Uniform4(loc, value); break;
 					}
 				}
 			}
