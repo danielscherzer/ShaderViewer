@@ -1,4 +1,5 @@
 ﻿using DefaultEcs;
+using DefaultEcs.System;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.Desktop;
 using OpenTK.Windowing.GraphicsLibraryFramework;
@@ -18,18 +19,22 @@ window.Location = (monitorSize - window.Size) / 2;
 
 var resDir = new EmbeddedResourceDirectory(nameof(ShaderViewer) + ".content");
 
-ShaderParseSystem shaderParseSystem = new (resDir, world);
-DefaultUniformSystem defaultUniformSystem = new(world, window);
-LogDrawSystem logDrawSystem = new(world);
-ShaderDrawSystem shaderDrawSystem = new(world);
-Gui guiDrawSystem = new(window, resDir, world);
-
+ShaderLoadSystem shaderLoadSystem = new (resDir, world);
 window.FileDrop += args =>
 {
 	var fileName = args.FileNames.First();
 	window.Title = fileName;
-	shaderParseSystem.LoadShaderFile(fileName);
+	shaderLoadSystem.LoadShaderFile(fileName);
 };
+
+SequentialSystem<float> drawSystems = new(
+	new DefaultUniformUpdateSystem(world, window),
+	new ShaderDrawSystem(world),
+	new LogGuiSystem(world),
+	new UniformGuiSystem(world)
+);
+
+Gui guiDrawSystem = new Gui(window, resDir);
 
 window.KeyDown += args =>
 {
@@ -39,8 +44,7 @@ window.KeyDown += args =>
 	}
 };
 
-window.RenderFrame += _ => shaderDrawSystem.Draw();
-window.RenderFrame += _ => logDrawSystem.Draw();
+window.RenderFrame += args => drawSystems.Update((float)args.Time);
 window.RenderFrame += _ => guiDrawSystem.Draw();
 window.RenderFrame += _ => window.SwapBuffers();
 

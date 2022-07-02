@@ -9,11 +9,11 @@ using Zenseless.Resources;
 
 namespace ShaderViewer
 {
-	internal class ShaderParseSystem
+	internal class ShaderLoadSystem
 	{
-		public ShaderParseSystem(IResourceDirectory resourceDirectory, World world)
+		public ShaderLoadSystem(IResourceDirectory resourceDirectory, World world)
 		{
-			this.world = world;
+			entity = world.CreateEntity();
 
 			defaultVertexShader = (ShaderType.VertexShader, resourceDirectory.Resource("screenQuad.vert").OpenText());
 			defaultFragmentSourceCode = resourceDirectory.Resource("checker.frag").OpenText();
@@ -30,7 +30,7 @@ namespace ShaderViewer
 			Parse(shaderSource);
 		}
 
-		private readonly World world;
+		private readonly Entity entity;
 		private readonly (ShaderType VertexShader, string) defaultVertexShader;
 		private readonly string defaultFragmentSourceCode;
 
@@ -56,16 +56,17 @@ namespace ShaderViewer
 				var fragment = (ShaderType.FragmentShader, shaderSource);
 				return new ShaderProgram().CompileLink(defaultVertexShader, fragment);
 			}
-			if(world.Has<ShaderProgram>()) world.Get<ShaderProgram>().Dispose();
+			
+			if(entity.Has<ShaderProgram>()) entity.Get<ShaderProgram>().Dispose();
 			try
 			{
-				world.Set(LoadShader(shaderSource));
-				world.Set("");
+				entity.Set(LoadShader(shaderSource));
+				entity.Set("");
 			}
 			catch (ShaderException se)
 			{
-				world.Set(se.Message);
-				world.Set(LoadShader(defaultFragmentSourceCode));
+				entity.Set(se.Message);
+				entity.Set(LoadShader(defaultFragmentSourceCode));
 			}
 		}
 
@@ -83,7 +84,7 @@ namespace ShaderViewer
 					uniforms.Set(name, instance);
 				}
 			}
-			world.Set(uniforms);
+			entity.Set(uniforms);
 		}
 	}
 }
