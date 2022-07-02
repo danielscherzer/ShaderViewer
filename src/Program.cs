@@ -3,7 +3,6 @@ using OpenTK.Mathematics;
 using OpenTK.Windowing.Desktop;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 using ShaderViewer;
-using ShaderViewer.Component;
 using System.Linq;
 using Zenseless.Resources;
 
@@ -20,15 +19,16 @@ window.Location = (monitorSize - window.Size) / 2;
 var resDir = new EmbeddedResourceDirectory(nameof(ShaderViewer) + ".content");
 
 ShaderParseSystem shaderParseSystem = new (resDir, world);
+DefaultUniformSystem defaultUniformSystem = new(world, window);
 LogDrawSystem logDrawSystem = new(world);
 ShaderDrawSystem shaderDrawSystem = new(world);
-Gui guiDrawSystem = new(window, resDir);
+Gui guiDrawSystem = new(window, resDir, world);
 
 window.FileDrop += args =>
 {
 	var fileName = args.FileNames.First();
 	window.Title = fileName;
-	shaderParseSystem.Load(fileName);
+	shaderParseSystem.LoadShaderFile(fileName);
 };
 
 window.KeyDown += args =>
@@ -39,10 +39,9 @@ window.KeyDown += args =>
 	}
 };
 
-window.RenderFrame += _ => world.Get<Uniforms>().Set("u_resolution", window.ClientSize.ToVector2());
 window.RenderFrame += _ => shaderDrawSystem.Draw();
 window.RenderFrame += _ => logDrawSystem.Draw();
-window.RenderFrame += args => guiDrawSystem.Draw();
+window.RenderFrame += _ => guiDrawSystem.Draw();
 window.RenderFrame += _ => window.SwapBuffers();
 
 window.Resize += (window) => guiDrawSystem.Resize(window.Width, window.Height);

@@ -7,7 +7,9 @@ namespace ShaderViewer
 {
 	public static class ResourceExtensions
 	{
-		public static Vector3 ToOpenTK(this System.Numerics.Vector3 vec) => new Vector3(vec.X, vec.Y, vec.Z);
+		public static Vector2 ToOpenTK(this System.Numerics.Vector2 vec) => new(vec.X, vec.Y);
+		public static Vector3 ToOpenTK(this System.Numerics.Vector3 vec) => new(vec.X, vec.Y, vec.Z);
+		public static Vector4 ToOpenTK(this System.Numerics.Vector4 vec) => new(vec.X, vec.Y, vec.Z, vec.W);
 
 		/// <summary>
 		/// Load a texture out of the given embedded resource.

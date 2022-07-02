@@ -16,8 +16,8 @@ namespace ShaderViewer
 		internal void Draw()
 		{
 			var _shaderProgram = world.Get<ShaderProgram>();
-			var uniforms = world.Get<Uniforms>();
 			_shaderProgram.Bind();
+			var uniforms = world.Get<Uniforms>();
 			foreach((string name , object objValue) in uniforms.NameValue)
 			{
 				var loc = GL.GetUniformLocation(_shaderProgram.Handle, name);

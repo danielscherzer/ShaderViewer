@@ -13,24 +13,25 @@ namespace ShaderViewer
 	{
 		public ShaderParseSystem(IResourceDirectory resourceDirectory, World world)
 		{
-			this.resourceDirectory = resourceDirectory;
 			this.world = world;
 
+			defaultVertexShader = (ShaderType.VertexShader, resourceDirectory.Resource("screenQuad.vert").OpenText());
 			defaultFragmentSourceCode = resourceDirectory.Resource("checker.frag").OpenText();
-			world.Set(LoadShader(defaultFragmentSourceCode));
+			Load(defaultFragmentSourceCode);
 			Parse(defaultFragmentSourceCode);
 		}
 
-		public void Load(string fileName)
+		public void LoadShaderFile(string fileName)
 		{
 			var shaderSource = File.ReadAllText(fileName);
 			string dir = Path.GetDirectoryName(fileName) ?? "";
-			//shaderSource = GLSLhelper.Transformation.ExpandIncludes(shaderSource, include => File.ReadAllText(Path.Combine(dir, include)));
+			shaderSource = GLSLhelper.Transformation.ExpandIncludes(shaderSource, include => File.ReadAllText(Path.Combine(dir, include)));
+			Load(shaderSource);
 			Parse(shaderSource);
 		}
 
-		private readonly IResourceDirectory resourceDirectory;
 		private readonly World world;
+		private readonly (ShaderType VertexShader, string) defaultVertexShader;
 		private readonly string defaultFragmentSourceCode;
 
 		private static Type? GetType(string typeName)
@@ -48,16 +49,14 @@ namespace ShaderViewer
 			};
 		}
 
-		private ShaderProgram LoadShader(string shaderSource)
+		private void Load(string shaderSource)
 		{
-			var vertex = (ShaderType.VertexShader, resourceDirectory.Resource("screenQuad.vert").OpenText());
-			var fragment = (ShaderType.FragmentShader, shaderSource);
-			return new ShaderProgram().CompileLink(vertex, fragment);
-		}
-
-		private void Parse(string shaderSource)
-		{
-			world.Get<ShaderProgram>()?.Dispose();
+			ShaderProgram LoadShader(string shaderSource)
+			{
+				var fragment = (ShaderType.FragmentShader, shaderSource);
+				return new ShaderProgram().CompileLink(defaultVertexShader, fragment);
+			}
+			if(world.Has<ShaderProgram>()) world.Get<ShaderProgram>().Dispose();
 			try
 			{
 				world.Set(LoadShader(shaderSource));
@@ -68,9 +67,12 @@ namespace ShaderViewer
 				world.Set(se.Message);
 				world.Set(LoadShader(defaultFragmentSourceCode));
 			}
+		}
 
+		private void Parse(string shaderSource)
+		{
 			var uniformDeclaration = GLSLhelper.Extract.Uniforms(GLSLhelper.Transformation.RemoveComments(shaderSource));
-			var uniforms = new Uniforms();
+			Uniforms uniforms = new();
 			foreach ((string typeName, string name) in uniformDeclaration)
 			{
 				var type = GetType(typeName);
