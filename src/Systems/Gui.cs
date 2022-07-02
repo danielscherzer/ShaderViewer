@@ -3,10 +3,11 @@ using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.Desktop;
 using OpenTK.Windowing.GraphicsLibraryFramework;
+using ShaderViewer.Helper;
 using System;
 using Zenseless.Resources;
 
-namespace ShaderViewer
+namespace ShaderViewer.Systems
 {
 	internal class Gui
 	{
@@ -33,6 +34,7 @@ namespace ShaderViewer
 			window.MouseWheel += args => MouseScroll(args.Offset);
 			window.TextInput += args => PressChar((char)args.Unicode);
 			window.UpdateFrame += args => Update(window.MouseState, window.KeyboardState, (float)args.Time);
+			window.Resize += (window) => Resize(window.Width, window.Height);
 		}
 
 		internal static void MouseScroll(Vector2 offset) => ImGuiController.MouseScroll(offset);
@@ -47,7 +49,7 @@ namespace ShaderViewer
 		internal static void Vec2Slider(string label, ref Vector2 v)
 		{
 			System.Numerics.Vector2 sysV = new(v.X, v.Y);
-			if(ImGui.InputFloat2(label, ref sysV))
+			if (ImGui.InputFloat2(label, ref sysV))
 			//if (ImGui.SliderFloat2(label, ref sysV, -1f, 1f))
 			{
 				v = sysV.ToOpenTK();
@@ -66,7 +68,7 @@ namespace ShaderViewer
 		internal static void ColorEdit(string label, ref Vector3 color)
 		{
 			System.Numerics.Vector3 sysColor = new(color.X, color.Y, color.Z);
-			if(ImGui.ColorEdit3(label, ref sysColor))
+			if (ImGui.ColorEdit3(label, ref sysColor))
 			{
 				color = sysColor.ToOpenTK();
 			}

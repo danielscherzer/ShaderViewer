@@ -11,7 +11,7 @@ using System.IO;
 using System.Collections;
 using System.Runtime.InteropServices;
 
-namespace ShaderViewer
+namespace ShaderViewer.Helper
 {
 	public class ImGuiController : IDisposable
 	{
@@ -47,7 +47,7 @@ namespace ShaderViewer
 			int major = GL.GetInteger(GetPName.MajorVersion);
 			int minor = GL.GetInteger(GetPName.MinorVersion);
 
-			KHRDebugAvailable = (major == 4 && minor >= 3) || IsExtensionSupported("KHR_debug");
+			KHRDebugAvailable = major == 4 && minor >= 3 || IsExtensionSupported("KHR_debug");
 
 			IntPtr context = ImGui.CreateContext();
 			ImGui.SetCurrentContext(context);

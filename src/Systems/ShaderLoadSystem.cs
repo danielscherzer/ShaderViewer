@@ -7,7 +7,7 @@ using System.IO;
 using Zenseless.OpenTK;
 using Zenseless.Resources;
 
-namespace ShaderViewer
+namespace ShaderViewer.Systems
 {
 	internal class ShaderLoadSystem
 	{
@@ -21,6 +21,8 @@ namespace ShaderViewer
 			Parse(defaultFragmentSourceCode);
 		}
 
+		public event Action<string>? Loaded;
+
 		public void LoadShaderFile(string fileName)
 		{
 			var shaderSource = File.ReadAllText(fileName);
@@ -28,6 +30,7 @@ namespace ShaderViewer
 			shaderSource = GLSLhelper.Transformation.ExpandIncludes(shaderSource, include => File.ReadAllText(Path.Combine(dir, include)));
 			Load(shaderSource);
 			Parse(shaderSource);
+			Loaded?.Invoke(fileName);
 		}
 
 		private readonly Entity entity;
@@ -56,8 +59,8 @@ namespace ShaderViewer
 				var fragment = (ShaderType.FragmentShader, shaderSource);
 				return new ShaderProgram().CompileLink(defaultVertexShader, fragment);
 			}
-			
-			if(entity.Has<ShaderProgram>()) entity.Get<ShaderProgram>().Dispose();
+
+			if (entity.Has<ShaderProgram>()) entity.Get<ShaderProgram>().Dispose();
 			try
 			{
 				entity.Set(LoadShader(shaderSource));

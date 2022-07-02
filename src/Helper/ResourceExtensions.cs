@@ -3,7 +3,7 @@ using System.IO;
 using Zenseless.OpenTK;
 using Zenseless.Resources;
 
-namespace ShaderViewer
+namespace ShaderViewer.Helper
 {
 	public static class ResourceExtensions
 	{

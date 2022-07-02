@@ -7,7 +7,7 @@ using ShaderViewer.Component;
 using System;
 using System.Collections.Generic;
 
-namespace ShaderViewer
+namespace ShaderViewer.Systems
 {
 	internal sealed partial class DefaultUniformUpdateSystem : AEntitySetSystem<float>
 	{

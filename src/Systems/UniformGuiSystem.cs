@@ -2,8 +2,9 @@
 using ImGuiNET;
 using OpenTK.Mathematics;
 using ShaderViewer.Component;
+using ShaderViewer.Systems;
 
-namespace ShaderViewer
+namespace ShaderViewer.Systems
 {
 	internal sealed partial class UniformGuiSystem : AEntitySetSystem<float>
 	{

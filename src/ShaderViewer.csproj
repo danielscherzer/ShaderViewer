@@ -12,10 +12,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="content\DroidSans.ttf" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="GLSLhelper" Version="0.3.58" />
     <PackageReference Include="Zenseless.OpenTK" Version="0.1.46" />
     <PackageReference Include="Zenseless.Resources" Version="0.1.10" />
@@ -25,12 +21,6 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Update="content\DroidSans.ttf">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </EmbeddedResource>
   </ItemGroup>
 
 </Project>

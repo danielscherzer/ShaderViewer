@@ -1,7 +1,7 @@
 ﻿using DefaultEcs.System;
 using ImGuiNET;
 
-namespace ShaderViewer
+namespace ShaderViewer.Systems
 {
 	internal sealed partial class LogGuiSystem : AEntitySetSystem<float>
 	{
