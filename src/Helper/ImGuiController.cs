@@ -1,13 +1,13 @@
 ﻿using ImGuiNET;
-using System;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.GraphicsLibraryFramework;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics;
-using ErrorCode = OpenTK.Graphics.OpenGL4.ErrorCode;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using ErrorCode = OpenTK.Graphics.OpenGL4.ErrorCode;
 
 namespace ShaderViewer.Helper
 {
@@ -230,7 +230,7 @@ void main()
 			io.DeltaTime = deltaSeconds; // DeltaTime is in seconds.
 		}
 
-		readonly List<char> PressedChars = new();
+		private readonly List<char> PressedChars = new();
 
 		private void UpdateImGuiInput(MouseState mouseState, KeyboardState keyboardState)
 		{
@@ -437,7 +437,7 @@ void main()
 				GL.ObjectLabel(objLabelIdent, glObject, name.Length, name);
 		}
 
-		static bool IsExtensionSupported(string name)
+		private static bool IsExtensionSupported(string name)
 		{
 			int n = GL.GetInteger(GetPName.NumExtensions);
 			for (int i = 0; i < n; i++)

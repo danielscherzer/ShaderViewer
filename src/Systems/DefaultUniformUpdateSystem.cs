@@ -11,7 +11,7 @@ namespace ShaderViewer.Systems
 {
 	internal sealed partial class DefaultUniformUpdateSystem : AEntitySetSystem<float>
 	{
-		public DefaultUniformUpdateSystem(World world, GameWindow window): base(world, CreateEntityContainer, false)
+		public DefaultUniformUpdateSystem(World world, GameWindow window) : base(world, CreateEntityContainer, false)
 		{
 			this.window = window;
 
@@ -34,7 +34,7 @@ namespace ShaderViewer.Systems
 				switch (name.ToLowerInvariant())
 				{
 					case "u_resolution":
-					case "iresolution": updaters.Add((_ , u) => u.Set(name, window.ClientSize.ToVector2())); break;
+					case "iresolution": updaters.Add((_, u) => u.Set(name, window.ClientSize.ToVector2())); break;
 					case "u_time":
 					case "iglobaltime":
 					case "itime": updaters.Add((deltaTime, u) => u.Update<float>(name, t => t + deltaTime)); break;
@@ -44,12 +44,12 @@ namespace ShaderViewer.Systems
 			}
 		}
 
-		static int GetButtonDown(MouseState m) => m[MouseButton.Left] ? 1 : (m[MouseButton.Right] ? 3 : (m[MouseButton.Middle]) ? 2 : 0);
+		private static int GetButtonDown(MouseState m) => m[MouseButton.Left] ? 1 : (m[MouseButton.Right] ? 3 : (m[MouseButton.Middle]) ? 2 : 0);
 
 		[Update]
 		private void Update(float deltaTime, in Uniforms uniforms)
 		{
-			foreach(var updater in updaters)
+			foreach (var updater in updaters)
 			{
 				updater(deltaTime, uniforms);
 			}

@@ -10,21 +10,23 @@ using Zenseless.Resources;
 using GameWindow window = new(GameWindowSettings.Default, NativeWindowSettings.Default);
 using World world = new();
 
+var resDir = new EmbeddedResourceDirectory(nameof(ShaderViewer) + ".content");
+
 using SequentialSystem<float> systems = new(
 	new DefaultUniformUpdateSystem(world, window),
+	new ShaderLoadSystem(resDir, world),
 	new ShaderDrawSystem(world),
 	new LogGuiSystem(world),
 	new UniformGuiSystem(world)
 );
-var resDir = new EmbeddedResourceDirectory(nameof(ShaderViewer) + ".content");
 
-LoadFileSystem loadFileSystem = new(resDir, world);
-
+LoadFileSystem loadFileSystem = new(world);
 loadFileSystem.Loaded += fileName => window.Title = fileName;
+
 ParseUniformsSystem parseUniformsSystem = new(world);
 
 var fileName = Environment.GetCommandLineArgs().ElementAtOrDefault(1);
-if(fileName is not null) loadFileSystem.LoadShaderFile(fileName);
+if (fileName is not null) loadFileSystem.LoadShaderFile(fileName);
 
 window.FileDrop += args => loadFileSystem.LoadShaderFile(args.FileNames.First());
 window.RenderFrame += args => systems.Update((float)args.Time);

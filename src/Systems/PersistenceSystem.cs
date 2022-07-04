@@ -12,7 +12,7 @@ namespace ShaderViewer.Systems
 			var monitorSize = new Vector2i(info.HorizontalResolution, info.VerticalResolution);
 			window.Size = monitorSize / 2;
 			window.Location = (monitorSize - window.Size) / 2;
-			window.WindowState = OpenTK.Windowing.Common.WindowState.Maximized;
+			//window.WindowState = OpenTK.Windowing.Common.WindowState.Maximized;
 		}
 	}
 }
