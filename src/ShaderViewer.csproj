@@ -12,15 +12,16 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="GLSLhelper" Version="0.3.58" />
-    <PackageReference Include="Zenseless.OpenTK" Version="0.1.46" />
-    <PackageReference Include="Zenseless.Resources" Version="0.1.10" />
-    <PackageReference Include="ImGui.NET" Version="1.87.3" />
     <PackageReference Include="DefaultEcs" Version="0.17.2" />
     <PackageReference Include="DefaultEcs.Analyzer" Version="0.17.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="GLSLhelper" Version="0.3.58" />
+    <PackageReference Include="ImGui.NET" Version="1.87.3" />
+    <PackageReference Include="System.Reactive" Version="5.0.0" />
+    <PackageReference Include="Zenseless.Resources" Version="0.1.11" />
+    <PackageReference Include="Zenseless.OpenTK" Version="0.1.46" />
   </ItemGroup>
 
 </Project>

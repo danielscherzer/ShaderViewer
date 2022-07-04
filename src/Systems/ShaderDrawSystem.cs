@@ -1,5 +1,4 @@
-﻿using DefaultEcs;
-using DefaultEcs.System;
+﻿using DefaultEcs.System;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 using ShaderViewer.Component;
@@ -9,10 +8,6 @@ namespace ShaderViewer.Systems
 {
 	internal sealed partial class ShaderDrawSystem : AEntitySetSystem<float>
 	{
-		public ShaderDrawSystem(World world) : base(world)
-		{
-		}
-
 		[Update]
 		private static void Update(in ShaderProgram shaderProgram, in Uniforms uniforms)
 		{

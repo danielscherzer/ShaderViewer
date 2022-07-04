@@ -1,19 +1,17 @@
 ﻿using DefaultEcs.System;
 using ImGuiNET;
+using ShaderViewer.Component;
 
 namespace ShaderViewer.Systems
 {
 	internal sealed partial class LogGuiSystem : AEntitySetSystem<float>
 	{
 		[Update]
-		private static void Update(in string log)
+		private static void Update(in Log log)
 		{
-			if (!string.IsNullOrEmpty(log))
-			{
-				ImGui.Begin("stats", ImGuiWindowFlags.AlwaysAutoResize | ImGuiWindowFlags.NoDecoration);
-				ImGui.Text(log);
-				ImGui.End();
-			}
+			ImGui.Begin("stats", ImGuiWindowFlags.AlwaysAutoResize | ImGuiWindowFlags.NoDecoration);
+			ImGui.Text(log);
+			ImGui.End();
 		}
 	}
 }

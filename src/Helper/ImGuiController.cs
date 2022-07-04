@@ -7,8 +7,6 @@ using OpenTK.Mathematics;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 using System.Diagnostics;
 using ErrorCode = OpenTK.Graphics.OpenGL4.ErrorCode;
-using System.IO;
-using System.Collections;
 using System.Runtime.InteropServices;
 
 namespace ShaderViewer.Helper

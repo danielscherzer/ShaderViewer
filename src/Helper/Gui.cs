@@ -3,23 +3,18 @@ using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.Desktop;
 using OpenTK.Windowing.GraphicsLibraryFramework;
-using ShaderViewer.Helper;
 using System;
-using Zenseless.Resources;
 
-namespace ShaderViewer.Systems
+namespace ShaderViewer.Helper
 {
 	internal class Gui
 	{
 		private readonly ImGuiController _controller;
 
-		public Gui(GameWindow window, IResourceDirectory resourceDirectory)
+		public Gui(GameWindow window, byte[] font)
 		{
 			Vector2i clientSize = window.ClientSize;
-			using var stream = resourceDirectory.Open("DroidSans.ttf");
-			var buffer = new byte[stream.Length];
-			stream.Read(buffer);
-			_controller = new ImGuiController(clientSize.X, clientSize.Y, buffer);
+			_controller = new ImGuiController(clientSize.X, clientSize.Y, font);
 			ImGuiIOPtr io = ImGui.GetIO();
 			io.FontGlobalScale = 1f;
 			io.ConfigFlags |= ImGuiConfigFlags.NavEnableKeyboard;

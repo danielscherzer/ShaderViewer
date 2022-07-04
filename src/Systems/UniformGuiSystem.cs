@@ -2,7 +2,7 @@
 using ImGuiNET;
 using OpenTK.Mathematics;
 using ShaderViewer.Component;
-using ShaderViewer.Systems;
+using ShaderViewer.Helper;
 
 namespace ShaderViewer.Systems
 {

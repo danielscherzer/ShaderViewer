@@ -1,7 +1,7 @@
 ﻿using DefaultEcs;
 using DefaultEcs.System;
 using OpenTK.Windowing.Desktop;
-using ShaderViewer;
+using ShaderViewer.Helper;
 using ShaderViewer.Systems;
 using System;
 using System.Linq;
@@ -9,6 +9,7 @@ using Zenseless.Resources;
 
 using GameWindow window = new(GameWindowSettings.Default, NativeWindowSettings.Default);
 using World world = new();
+
 using SequentialSystem<float> systems = new(
 	new DefaultUniformUpdateSystem(world, window),
 	new ShaderDrawSystem(world),
@@ -17,15 +18,17 @@ using SequentialSystem<float> systems = new(
 );
 var resDir = new EmbeddedResourceDirectory(nameof(ShaderViewer) + ".content");
 
-ShaderLoadSystem shaderLoadSystem = new(resDir, world);
-shaderLoadSystem.Loaded += fileName => window.Title = fileName;
+LoadFileSystem loadFileSystem = new(resDir, world);
+
+loadFileSystem.Loaded += fileName => window.Title = fileName;
+ParseUniformsSystem parseUniformsSystem = new(world);
 
 var fileName = Environment.GetCommandLineArgs().ElementAtOrDefault(1);
-if(fileName is not null) shaderLoadSystem.LoadShaderFile(fileName);
+if(fileName is not null) loadFileSystem.LoadShaderFile(fileName);
 
-window.FileDrop += args => shaderLoadSystem.LoadShaderFile(args.FileNames.First());
+window.FileDrop += args => loadFileSystem.LoadShaderFile(args.FileNames.First());
 window.RenderFrame += args => systems.Update((float)args.Time);
-Gui guiDrawSystem = new(window, resDir);
+Gui guiDrawSystem = new(window, resDir.Resource("DroidSans.ttf").AsByteArray());
 window.RenderFrame += _ => guiDrawSystem.Draw();
 window.RenderFrame += _ => window.SwapBuffers();
 

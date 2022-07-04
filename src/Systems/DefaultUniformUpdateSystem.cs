@@ -11,12 +11,12 @@ namespace ShaderViewer.Systems
 {
 	internal sealed partial class DefaultUniformUpdateSystem : AEntitySetSystem<float>
 	{
-		public DefaultUniformUpdateSystem(World world, GameWindow window): base(world)
+		public DefaultUniformUpdateSystem(World world, GameWindow window): base(world, CreateEntityContainer, false)
 		{
 			this.window = window;
 
-			world.SubscribeComponentAdded((in Entity _, in Uniforms component) => FindDefaultUniforms(component));
-			world.SubscribeComponentChanged((in Entity _, in Uniforms _, in Uniforms c) => FindDefaultUniforms(c));
+			world.SubscribeComponentAdded((in Entity _, in Uniforms component) => RegisterUpdaters(component));
+			world.SubscribeComponentChanged((in Entity _, in Uniforms _, in Uniforms c) => RegisterUpdaters(c));
 
 			window.MouseDown += _ => button = GetButtonDown(window.MouseState);
 			window.MouseUp += _ => button = GetButtonDown(window.MouseState);
@@ -26,7 +26,7 @@ namespace ShaderViewer.Systems
 		private readonly List<Action<float, Uniforms>> updaters = new();
 		private int button;
 
-		private void FindDefaultUniforms(in Uniforms uniforms)
+		private void RegisterUpdaters(in Uniforms uniforms)
 		{
 			updaters.Clear();
 			foreach ((string name, object objValue) in uniforms.Pairs)
