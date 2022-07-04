@@ -14,11 +14,12 @@ namespace ShaderViewer.Systems
 			var monitorSize = new Vector2i(info.HorizontalResolution, info.VerticalResolution);
 			window.Size = monitorSize / 2;
 			window.Location = (monitorSize - window.Size) / 2;
-			//window.WindowState = OpenTK.Windowing.Common.WindowState.Maximized;
 
+			Vector2i Clamp(System.Numerics.Vector2 vec) => (Vector2i)Vector2.ComponentMin(monitorSize, vec.ToOpenTK());
+			
 			PersistentSettings settings = new();
-			settings.AddFromGetterSetter("location", () => window.Location.FromOpenTK(), t => window.Location = t.ToOpenTKi());
-			settings.AddFromGetterSetter("size", () => window.Size.FromOpenTK(), t => window.Size = t.ToOpenTKi());
+			settings.AddFromGetterSetter("location", () => window.Location.FromOpenTK(), t => window.Location = Clamp(t));
+			settings.AddFromGetterSetter("size", () => window.Size.FromOpenTK(), t => window.Size = Clamp(t));
 			settings.Load();
 
 			window.Closing += _ => settings.Store();

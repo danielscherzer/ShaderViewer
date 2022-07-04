@@ -9,7 +9,6 @@ namespace ShaderViewer.Helper
 	{
 		public static System.Numerics.Vector2 FromOpenTK(this Vector2 vec) => new(vec.X, vec.Y);
 		public static System.Numerics.Vector2 FromOpenTK(this Vector2i vec) => new(vec.X, vec.Y);
-		public static Vector2i ToOpenTKi(this System.Numerics.Vector2 vec) => new((int)vec.X, (int)vec.Y);
 		public static Vector2 ToOpenTK(this System.Numerics.Vector2 vec) => new(vec.X, vec.Y);
 		public static Vector3 ToOpenTK(this System.Numerics.Vector3 vec) => new(vec.X, vec.Y, vec.Z);
 		public static Vector4 ToOpenTK(this System.Numerics.Vector4 vec) => new(vec.X, vec.Y, vec.Z, vec.W);

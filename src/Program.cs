@@ -9,6 +9,7 @@ using Zenseless.Resources;
 
 using GameWindow window = new(GameWindowSettings.Default, NativeWindowSettings.Default);
 using World world = new();
+//window.Context.MakeCurrent();
 
 var resDir = new EmbeddedResourceDirectory(nameof(ShaderViewer) + ".content");
 
