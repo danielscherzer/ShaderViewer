@@ -26,7 +26,6 @@ namespace ShaderViewer.Systems
 				}
 			}
 			ImGui.End();
-			//ImGui.ShowDemoWindow();
 		}
 	}
 }

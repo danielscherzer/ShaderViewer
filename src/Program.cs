@@ -17,6 +17,7 @@ using SequentialSystem<float> systems = new(
 	new DefaultUniformUpdateSystem(world, window),
 	new ShaderLoadSystem(resDir, world),
 	new ShaderDrawSystem(world),
+	new MenuGuiSystem(window, world),
 	new LogGuiSystem(world),
 	new UniformGuiSystem(world)
 );
@@ -36,6 +37,5 @@ window.RenderFrame += _ => guiDrawSystem.Draw();
 window.RenderFrame += _ => window.SwapBuffers();
 
 PersistenceSystem persistenceSystem = new(window);
-InputSystem inputSystem = new(window);
 
 window.Run();
