@@ -4,7 +4,6 @@ using ImGuiNET;
 using OpenTK.Windowing.Desktop;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 using System;
-using System.Collections.Generic;
 
 namespace ShaderViewer.Systems
 {
@@ -12,15 +11,29 @@ namespace ShaderViewer.Systems
 	{
 		public MenuGuiSystem(GameWindow window, World world)
 		{
-			commandBindings.Add(Keys.Escape, ("Close", () => window.Close()));
+			var query = world.GetEntities().With<Keys>().With<Action>();
+			keyBindings = query.AsMap<Keys>();
+			bindings = query.AsSet();
+			void AddKeyBinding(Keys keys, string text, Action action)
+			{
+				//var entity
+				var entity = world.CreateEntity();
+				entity.Set(keys);
+				entity.Set(text);
+				entity.Set(action);
+			}
+			AddKeyBinding(Keys.LeftAlt, "Show Menu", () => showMenu = !showMenu);
+			AddKeyBinding(Keys.Escape, "Close", () => window.Close());
 
 			window.KeyDown += args =>
 			{
-				if(commandBindings.TryGetValue(args.Key, out var binding))
+				if (keyBindings.TryGetEntity(args.Key, out var entity))
 				{
-					binding.action();
+					entity.Get<Action>()();
 				}
 			};
+			keyBindings.Complete();
+			bindings.Complete();
 		}
 
 		public bool IsEnabled { get; set; }
@@ -31,24 +44,31 @@ namespace ShaderViewer.Systems
 
 		public void Update(float deltaTime)
 		{
-			if (ImGui.IsMouseClicked(ImGuiMouseButton.Right))
+			if(showMenu)
 			{
-				ImGui.OpenPopup("menu");
-			}
-			if (ImGui.BeginPopup("menu"))
-			{
-				foreach(var binding in commandBindings)
+				ImGui.BeginMainMenuBar();
+				if(ImGui.BeginMenu("File"))
 				{
-					if (ImGui.MenuItem(binding.Value.name, binding.Key.ToString()))
+					foreach(var binding in bindings.GetEntities())
 					{
-						binding.Value.action();
+						if (ImGui.MenuItem(binding.Get<string>(), binding.Get<Keys>().ToString()))
+						{
+							binding.Get<Action>()();
+						}
 					}
+					ImGui.EndMenu();
 				}
-				ImGui.EndPopup();
+				if (ImGui.BeginMenu("Window"))
+				{
+					ImGui.EndMenu();
+				}
+				ImGui.EndMainMenuBar();
 			}
 			//ImGui.ShowDemoWindow();
 		}
 
-		private readonly Dictionary<Keys, (string name, Action action)> commandBindings = new();
+		private readonly EntityMap<Keys> keyBindings;
+		private readonly EntitySet bindings;
+		private bool showMenu = true; //TODO: move to world
 	}
 }

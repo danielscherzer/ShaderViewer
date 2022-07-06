@@ -12,7 +12,7 @@ namespace ShaderViewer.Systems
 		private static void Update(in ShaderProgram shaderProgram, in Uniforms uniforms)
 		{
 			shaderProgram.Bind(); // because of this bind we can use GL.Uniform* commands
-			foreach ((string name, object objValue) in uniforms.Pairs)
+			foreach ((string name, object objValue) in uniforms.Pairs())
 			{
 				var loc = GL.GetUniformLocation(shaderProgram.Handle, name);
 				if (-1 != loc)

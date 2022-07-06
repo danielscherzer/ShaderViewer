@@ -11,6 +11,7 @@ namespace ShaderViewer.Systems
 	{
 		public ShaderLoadSystem(IResourceDirectory resourceDirectory, World world) : base(world, CreateEntityContainer, true)
 		{
+			//TODO: try out window.Context.MakeCurrent();
 			world.SubscribeComponentAdded((in Entity _, in SourceCode sourceCode) => reload = true);
 			world.SubscribeComponentChanged((in Entity _, in SourceCode _, in SourceCode sourceCode) => reload = true);
 
@@ -28,17 +29,22 @@ namespace ShaderViewer.Systems
 			if (reload)
 			{
 				if (entity.Has<ShaderProgram>()) entity.Get<ShaderProgram>().Dispose();
-				try
-				{
-					entity.Set(LoadShader(sourceCode));
-					entity.Remove<Log>();
-				}
-				catch (ShaderException se)
-				{
-					entity.Set(new Log(se.Message));
-					entity.Set(LoadShader(defaultFragmentSourceCode));
-				}
+				Load(entity, sourceCode);
 				reload = false;
+			}
+		}
+
+		private void Load(in Entity entity, in SourceCode sourceCode)
+		{
+			try
+			{
+				entity.Set(LoadShader(sourceCode));
+				entity.Remove<Log>();
+			}
+			catch (ShaderException se)
+			{
+				entity.Set(new Log(se.Message));
+				entity.Set(LoadShader(defaultFragmentSourceCode));
 			}
 		}
 

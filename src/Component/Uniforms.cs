@@ -19,7 +19,7 @@ namespace ShaderViewer.Component
 			Dictionary[name] = updater(value);
 		}
 
-		public IEnumerable<(string name, object value)> Pairs => Dictionary.Select(p => (p.Key, p.Value));
+		public IEnumerable<(string name, object value)> Pairs() => Dictionary.Select(p => (p.Key, p.Value));
 
 		public readonly Dictionary<string, object> Dictionary = new();
 	}

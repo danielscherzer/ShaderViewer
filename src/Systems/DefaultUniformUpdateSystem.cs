@@ -29,7 +29,7 @@ namespace ShaderViewer.Systems
 		private void RegisterUpdaters(in Uniforms uniforms)
 		{
 			updaters.Clear();
-			foreach ((string name, object objValue) in uniforms.Pairs)
+			foreach ((string name, object objValue) in uniforms.Pairs())
 			{
 				switch (name.ToLowerInvariant())
 				{

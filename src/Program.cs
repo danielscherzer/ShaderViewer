@@ -9,7 +9,6 @@ using Zenseless.Resources;
 
 using GameWindow window = new(GameWindowSettings.Default, NativeWindowSettings.Default);
 using World world = new();
-//window.Context.MakeCurrent();
 
 var resDir = new EmbeddedResourceDirectory(nameof(ShaderViewer) + ".content");
 
@@ -36,6 +35,6 @@ Gui guiDrawSystem = new(window, resDir.Resource("DroidSans.ttf").AsByteArray());
 window.RenderFrame += _ => guiDrawSystem.Draw();
 window.RenderFrame += _ => window.SwapBuffers();
 
-PersistenceSystem persistenceSystem = new(window);
+PersistenceSystem persistenceSystem = new(window, world);
 
 window.Run();
