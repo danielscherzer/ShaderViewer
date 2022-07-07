@@ -3,6 +3,7 @@ using DefaultEcs.System;
 using ImGuiNET;
 using OpenTK.Windowing.Desktop;
 using OpenTK.Windowing.GraphicsLibraryFramework;
+using ShaderViewer.Component;
 using System;
 
 namespace ShaderViewer.Systems
@@ -34,6 +35,7 @@ namespace ShaderViewer.Systems
 			};
 			keyBindings.Complete();
 			bindings.Complete();
+			this.world = world;
 		}
 
 		public bool IsEnabled { get; set; }
@@ -59,7 +61,10 @@ namespace ShaderViewer.Systems
 					ImGui.EndMenu();
 				}
 				if (ImGui.BeginMenu("Window"))
-				{
+{
+					float inputDelta = world.Get<InputDelta>();
+					ImGui.DragFloat("input delta", ref inputDelta, 0.005f, 0.005f, float.PositiveInfinity);
+					world.Set(new InputDelta(inputDelta));
 					ImGui.EndMenu();
 				}
 				ImGui.EndMainMenuBar();
@@ -69,6 +74,7 @@ namespace ShaderViewer.Systems
 
 		private readonly EntityMap<Keys> keyBindings;
 		private readonly EntitySet bindings;
+		private readonly World world;
 		private bool showMenu = true; //TODO: move to world
 	}
 }

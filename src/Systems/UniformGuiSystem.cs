@@ -14,8 +14,6 @@ namespace ShaderViewer.Systems
 			float inputDelta = World.Get<InputDelta>();
 			if (ImGui.Begin("Uniforms", ImGuiWindowFlags.AlwaysAutoResize))
 			{
-				ImGui.DragFloat("input delta", ref inputDelta, 0.005f, 0.005f, float.PositiveInfinity);
-				World.Set(new InputDelta(inputDelta));
 				foreach ((string name, object objValue) in uniforms.Pairs())
 				{
 					switch (objValue)
