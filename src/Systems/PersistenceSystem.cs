@@ -1,14 +1,15 @@
-﻿using OpenTK.Mathematics;
+﻿using DefaultEcs;
+using OpenTK.Mathematics;
 using OpenTK.Windowing.Desktop;
 using ShaderViewer.Component;
-using ShaderViewer.Helper;
+using Zenseless.OpenTK;
 using Zenseless.PersistentSettings;
 
 namespace ShaderViewer.Systems
 {
 	internal class PersistenceSystem
 	{
-		public PersistenceSystem(GameWindow window, DefaultEcs.World world)
+		public PersistenceSystem(GameWindow window, World world)
 		{
 			// set window postition/size relative to monitor size
 			var info = Monitors.GetMonitorFromWindow(window);
@@ -19,13 +20,19 @@ namespace ShaderViewer.Systems
 			Vector2i Clamp(System.Numerics.Vector2 vec) => (Vector2i)Vector2.ComponentMin(monitorSize, vec.ToOpenTK());
 
 			PersistentSettings settings = new();
-			settings.AddFromGetterSetter("location", () => window.Location.FromOpenTK(), t => window.Location = Clamp(t));
-			settings.AddFromGetterSetter("size", () => window.Size.FromOpenTK(), t => window.Size = Clamp(t));
+			settings.AddFromGetterSetter("location", () => ((Vector2)window.Location).ToSystemNumerics(), t => window.Location = Clamp(t));
+			settings.AddFromGetterSetter("size", () => ((Vector2)window.Size).ToSystemNumerics(), t => window.Size = Clamp(t));
 			world.Set(new InputDelta());
 			settings.AddFromGetterSetter("inputDelta", () => world.Get<InputDelta>(), t => world.Set(t));
 			settings.Load();
 
 			window.Closing += _ => settings.Store();
+			//window.Closing += _ =>
+			//{
+			//	ISerializer serializer = new TextSerializer(); // or BinarySerializer
+			//	using Stream stream = File.Create(@"d:\test.txt");
+			//	serializer.Serialize(stream, world);
+			//};
 		}
 	}
 }

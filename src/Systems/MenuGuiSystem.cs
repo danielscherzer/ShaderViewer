@@ -46,12 +46,12 @@ namespace ShaderViewer.Systems
 
 		public void Update(float deltaTime)
 		{
-			if(showMenu)
+			if (showMenu)
 			{
 				ImGui.BeginMainMenuBar();
-				if(ImGui.BeginMenu("File"))
+				if (ImGui.BeginMenu("File"))
 				{
-					foreach(var binding in bindings.GetEntities())
+					foreach (var binding in bindings.GetEntities())
 					{
 						if (ImGui.MenuItem(binding.Get<string>(), binding.Get<Keys>().ToString()))
 						{
@@ -61,7 +61,7 @@ namespace ShaderViewer.Systems
 					ImGui.EndMenu();
 				}
 				if (ImGui.BeginMenu("Window"))
-{
+				{
 					float inputDelta = world.Get<InputDelta>();
 					ImGui.DragFloat("input delta", ref inputDelta, 0.005f, 0.005f, float.PositiveInfinity);
 					world.Set(new InputDelta(inputDelta));
