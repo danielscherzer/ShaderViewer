@@ -4,7 +4,7 @@ using System.Reactive.Linq;
 
 namespace ShaderViewer.Helper;
 
-internal class TrackedFileObservable
+internal static class TrackedFileObservable
 {
 	internal static IObservable<string> DelayedLoad(string fileName)
 	{

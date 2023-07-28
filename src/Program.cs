@@ -1,6 +1,7 @@
 ﻿using DefaultEcs;
 using DefaultEcs.System;
 using OpenTK.Windowing.Desktop;
+using ShaderViewer.Component;
 using ShaderViewer.Systems;
 using System;
 using System.Linq;
@@ -10,16 +11,19 @@ using Zenseless.OpenTK;
 using GameWindow window = new(GameWindowSettings.Default, ImmediateMode.NativeWindowSettings);
 using World world = new();
 
-LoadFileSystem loadFileSystem = new(world);
-loadFileSystem.Loaded += fileName => window.Title = fileName;
+world.SubscribeComponentAdded((in Entity entity, in ShaderFile shaderFile) => window.Title = shaderFile.Name);
+world.SubscribeComponentChanged((in Entity entity, in ShaderFile _, in ShaderFile shaderFile) => window.Title = shaderFile.Name);
+
+LoadShaderSourceSystem.Subscribe(world);
 
 ParseUniformsSystem parseUniformsSystem = new(world);
 
-var fileName = Environment.GetCommandLineArgs().ElementAtOrDefault(1);
-//if (fileName is not null) loadFileSystem.LoadShaderFile(fileName);
-if (fileName is not null) loadFileSystem.LoadShaderFile(fileName);
+var shaderFile = world.CreateEntity();
 
-window.FileDrop += args => loadFileSystem.LoadShaderFile(args.FileNames.First());
+var fileName = Environment.GetCommandLineArgs().ElementAtOrDefault(1);
+if (fileName is not null) shaderFile.Set(new ShaderFile(fileName));
+
+window.FileDrop += args => shaderFile.Set(new ShaderFile(args.FileNames.First()));
 
 using SequentialSystem<float> systems = new(
 	new DefaultUniformUpdateSystem(world, window),
