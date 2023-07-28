@@ -1,14 +1,3 @@
-﻿namespace ShaderViewer.Component
-{
-	internal readonly struct Log
-	{
-		public readonly string Message = "";
+﻿namespace ShaderViewer.Component;
 
-		public Log(string message)
-		{
-			Message = message;
-		}
-
-		public static implicit operator string(Log log) => log.Message;
-	}
-}
+internal readonly record struct Log(string Message); 

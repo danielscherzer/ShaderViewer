@@ -1,14 +1,6 @@
-﻿namespace ShaderViewer.Component
+﻿namespace ShaderViewer.Component;
+
+internal readonly record struct SourceCode(string Value)
 {
-	internal readonly struct SourceCode
-	{
-		public readonly string Value = "";
-
-		public SourceCode(string sourceCode)
-		{
-			Value = sourceCode;
-		}
-
-		public static implicit operator string(SourceCode sourceCode) => sourceCode.Value;
-	}
+	public static implicit operator string(SourceCode sourceCode) => sourceCode.Value;
 }

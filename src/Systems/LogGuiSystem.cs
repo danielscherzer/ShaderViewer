@@ -10,7 +10,7 @@ namespace ShaderViewer.Systems
 		private static void Update(in Log log)
 		{
 			ImGui.Begin("stats", ImGuiWindowFlags.AlwaysAutoResize | ImGuiWindowFlags.NoDecoration);
-			ImGui.Text(log);
+			ImGui.Text(log.Message);
 			ImGui.End();
 		}
 	}
