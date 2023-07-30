@@ -5,6 +5,8 @@
     <TargetFramework>net6.0</TargetFramework>
     <RootNamespace>ShaderViewer</RootNamespace>
     <Nullable>enable</Nullable>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
   </PropertyGroup>
 
   <ItemGroup>
@@ -19,9 +21,8 @@
     </PackageReference>
     <PackageReference Include="GLSLhelper" Version="0.3.61" />
     <PackageReference Include="System.Reactive" Version="6.0.0" />
-    <PackageReference Include="Zenseless.OpenTK.GUI" Version="0.1.20" />
+    <PackageReference Include="Zenseless.OpenTK.GUI" Version="0.1.21" />
     <PackageReference Include="Zenseless.PersistentSettings" Version="0.1.8" />
-    <PackageReference Include="Zenseless.Resources" Version="0.2.14" />
   </ItemGroup>
 
 </Project>

@@ -7,23 +7,26 @@ using System;
 using System.Linq;
 using Zenseless.OpenTK;
 
-//TODO: using GameWindow window = new(GameWindowSettings.Default, NativeWindowSettings.Default);
+//using GameWindow window = new(GameWindowSettings.Default, NativeWindowSettings.Default); //TODO: core mode
 using GameWindow window = new(GameWindowSettings.Default, ImmediateMode.NativeWindowSettings);
+window.VSync = OpenTK.Windowing.Common.VSyncMode.On;
+
 using World world = new();
 
-world.SubscribeComponentAdded((in Entity entity, in ShaderFile shaderFile) => window.Title = shaderFile.Name);
-world.SubscribeComponentChanged((in Entity entity, in ShaderFile _, in ShaderFile shaderFile) => window.Title = shaderFile.Name);
+world.SubscribeComponentAdded((in Entity _, in ShaderFile shaderFile) => window.Title = shaderFile.Name);
+world.SubscribeComponentChanged((in Entity _, in ShaderFile _, in ShaderFile shaderFile) => window.Title = shaderFile.Name);
 
-LoadShaderSourceSystem.Subscribe(world);
+world.SubscribeRecentFilesSystem();
+world.SubscribeLoadShaderSourceSystem();
+world.SubscribeParseUniformsSystem();
+window.SubscribePersistenceSystem(world);
 
-ParseUniformsSystem parseUniformsSystem = new(world);
-
-var shaderFile = world.CreateEntity();
+var shader = world.CreateEntity();
 
 var fileName = Environment.GetCommandLineArgs().ElementAtOrDefault(1);
-if (fileName is not null) shaderFile.Set(new ShaderFile(fileName));
+if (fileName is not null) shader.Set(new ShaderFile(fileName));
 
-window.FileDrop += args => shaderFile.Set(new ShaderFile(args.FileNames.First()));
+window.FileDrop += args => shader.Set(new ShaderFile(args.FileNames.First()));
 
 using SequentialSystem<float> systems = new(
 	new DefaultUniformUpdateSystem(world, window),
@@ -37,7 +40,5 @@ using SequentialSystem<float> systems = new(
 
 window.RenderFrame += args => systems.Update((float)args.Time);
 window.RenderFrame += _ => window.SwapBuffers();
-
-PersistenceSystem persistenceSystem = new(window, world);
 
 window.Run();

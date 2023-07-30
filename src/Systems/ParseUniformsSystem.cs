@@ -5,9 +5,9 @@ using System;
 
 namespace ShaderViewer.Systems;
 
-internal class ParseUniformsSystem
+internal static class ParseUniformsSystem
 {
-	public ParseUniformsSystem(World world)
+	public static void SubscribeParseUniformsSystem(this World world)
 	{
 		world.SubscribeComponentAdded((in Entity entity, in SourceCode sourceCode) => Parse(entity, sourceCode));
 		world.SubscribeComponentChanged((in Entity entity, in SourceCode _, in SourceCode sourceCode) => Parse(entity, sourceCode));

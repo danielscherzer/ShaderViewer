@@ -44,7 +44,7 @@ namespace ShaderViewer.Systems
 			}
 		}
 
-		private static int GetButtonDown(MouseState m) => m[MouseButton.Left] ? 1 : (m[MouseButton.Right] ? 3 : (m[MouseButton.Middle]) ? 2 : 0);
+		private static int GetButtonDown(MouseState m) => m[MouseButton.Left] ? 1 : (m[MouseButton.Right] ? 3 : m[MouseButton.Middle] ? 2 : 0);
 
 		[Update]
 		private void Update(float deltaTime, in Uniforms uniforms)

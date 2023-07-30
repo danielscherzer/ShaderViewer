@@ -5,6 +5,7 @@ using OpenTK.Windowing.Desktop;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 using ShaderViewer.Component;
 using System;
+using System.Linq;
 
 namespace ShaderViewer.Systems;
 
@@ -51,15 +52,23 @@ internal class MenuGuiSystem : ISystem<float>
 			ImGui.BeginMainMenuBar();
 			if (ImGui.BeginMenu("File"))
 			{
-				//var recentFiles = world.Get<RecentFiles>();
-				//foreach(var fileName in recentFiles)
-				//{
-				//	if (ImGui.MenuItem(fileName))
-				//	{
-				//		//TODO: world set current shader file;
-				//	}
-				//}
-				//ImGui.Separator();
+				if (world.Has<RecentFiles>())
+				{
+					var recentFiles = world.Get<RecentFiles>();
+					foreach (var fileName in recentFiles.Names)
+					{
+						if (ImGui.MenuItem(fileName))
+						{
+							var query = world.GetEntities().With<ShaderFile>().AsEnumerable();
+							if (query.Any())
+							{
+								var entity = query.First();
+								entity.Set(new ShaderFile(fileName));
+							}
+						}
+					}
+					ImGui.Separator();
+				}
 				foreach (var binding in bindings.GetEntities())
 				{
 					if (ImGui.MenuItem(binding.Get<string>(), binding.Get<Keys>().ToString()))
