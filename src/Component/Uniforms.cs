@@ -11,7 +11,7 @@ internal class Uniforms
 		Dictionary[name] = value;
 	}
 
-	public void Update<TType>(string name, Func<TType, TType> updater) where TType : struct
+	public void RegisterUpdater<TType>(string name, Func<TType, TType> updater) where TType : struct
 	{
 		var obj = Dictionary[name];
 		if (obj is not TType) throw new ArgumentException("Invalid type");
@@ -19,7 +19,7 @@ internal class Uniforms
 		Dictionary[name] = updater(value);
 	}
 
-	public IEnumerable<(string name, object value)> Pairs() => Dictionary.Select(p => (p.Key, p.Value));
+	public IEnumerable<(string name, object value)> NameValue() => Dictionary.Select(p => (p.Key, p.Value));
 
 	public readonly Dictionary<string, object> Dictionary = new();
 }

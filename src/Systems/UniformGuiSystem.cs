@@ -14,7 +14,7 @@ internal sealed partial class UniformGuiSystem : AEntitySetSystem<float>
 		float inputDelta = World.Get<InputDelta>();
 		if (ImGui.Begin("Uniforms", ImGuiWindowFlags.AlwaysAutoResize))
 		{
-			foreach ((string name, object objValue) in uniforms.Pairs())
+			foreach ((string name, object objValue) in uniforms.NameValue())
 			{
 				switch (objValue)
 				{

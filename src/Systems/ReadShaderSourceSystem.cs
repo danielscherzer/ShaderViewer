@@ -6,18 +6,18 @@ using System.Reactive.Linq;
 
 namespace ShaderViewer.Systems;
 
-internal static class LoadShaderSourceSystem
+internal static class ReadShaderSourceSystem
 {
-	public static void SubscribeLoadShaderSourceSystem(this World world)
+	public static void SubscribeReadShaderSourceSystem(this World world)
 	{
 		static void Load(Entity entity, string fileName)
 		{
 			void LoadFile(string fileName)
 			{
-				var sourceCode = File.ReadAllText(fileName);
-				string dir = Path.GetDirectoryName(fileName) ?? "";
 				try
 				{
+					var sourceCode = File.ReadAllText(fileName);
+					string dir = Path.GetDirectoryName(fileName) ?? "";
 					sourceCode = GLSLhelper.Transformation.ExpandIncludes(sourceCode, includeName => File.ReadAllText(Path.Combine(dir, includeName)));
 					entity.Set(new SourceCode(sourceCode));
 				}
@@ -27,6 +27,7 @@ internal static class LoadShaderSourceSystem
 				}
 			}
 			if (entity.Has<IDisposable>()) entity.Get<IDisposable>().Dispose();
+			if (!File.Exists(fileName)) return;
 			var fileChangeSubscription = DelayedLoad(fileName).Subscribe(fileName => LoadFile(fileName));
 			entity.Set(fileChangeSubscription);
 		}
@@ -35,7 +36,7 @@ internal static class LoadShaderSourceSystem
 		world.SubscribeComponentChanged((in Entity entity, in ShaderFile _, in ShaderFile shaderFile) => Load(entity, shaderFile.Name));
 	}
 
-	internal static IObservable<string> DelayedLoad(string fileName)
+	private static IObservable<string> DelayedLoad(string fileName)
 	{
 		//var scheduler = Scheduler.CurrentThread;
 		return CreateFileChangeSequence(fileName)

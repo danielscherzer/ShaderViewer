@@ -10,15 +10,8 @@ internal static class RecentFilesSystem
 	{
 		void Update(string name)
 		{
-			if (world.Has<RecentFiles>())
-			{
-				var recentFiles = world.Get<RecentFiles>();
-				world.Set(new RecentFiles(recentFiles.Names.Append(name).Distinct()));
-			}
-			else
-			{
-				world.Set(new RecentFiles(new string[] { name }));
-			}
+			var recentFiles = world.Get<RecentFiles>().Names;
+			world.Set(new RecentFiles(recentFiles.Append(name)));
 		}
 
 		world.SubscribeComponentAdded((in Entity entity, in ShaderFile shaderFile) => Update(shaderFile.Name));

@@ -52,23 +52,21 @@ internal class MenuGuiSystem : ISystem<float>
 			ImGui.BeginMainMenuBar();
 			if (ImGui.BeginMenu("File"))
 			{
-				if (world.Has<RecentFiles>())
+				var recentFiles = world.Get<RecentFiles>();
+				foreach (var fileName in recentFiles.Names.Reverse())
 				{
-					var recentFiles = world.Get<RecentFiles>();
-					foreach (var fileName in recentFiles.Names)
+					if (ImGui.MenuItem(fileName))
 					{
-						if (ImGui.MenuItem(fileName))
+						var query = world.GetEntities().With<ShaderFile>().AsEnumerable();
+						if (query.Any())
 						{
-							var query = world.GetEntities().With<ShaderFile>().AsEnumerable();
-							if (query.Any())
-							{
-								var entity = query.First();
-								entity.Set(new ShaderFile(fileName));
-							}
+							var entity = query.First();
+							entity.Set(new ShaderFile(fileName));
 						}
 					}
-					ImGui.Separator();
 				}
+				if(recentFiles.Names.Any()) ImGui.Separator();
+
 				foreach (var binding in bindings.GetEntities())
 				{
 					if (ImGui.MenuItem(binding.Get<string>(), binding.Get<Keys>().ToString()))

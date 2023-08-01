@@ -29,7 +29,7 @@ namespace ShaderViewer.Systems
 		private void RegisterUpdaters(in Uniforms uniforms)
 		{
 			updaters.Clear();
-			foreach ((string name, object objValue) in uniforms.Pairs())
+			foreach ((string name, object objValue) in uniforms.NameValue())
 			{
 				switch (name.ToLowerInvariant())
 				{
@@ -37,7 +37,7 @@ namespace ShaderViewer.Systems
 					case "iresolution": updaters.Add((_, u) => u.Set(name, window.ClientSize.ToVector2())); break;
 					case "u_time":
 					case "iglobaltime":
-					case "itime": updaters.Add((deltaTime, u) => u.Update<float>(name, t => t + deltaTime)); break;
+					case "itime": updaters.Add((deltaTime, u) => u.RegisterUpdater<float>(name, t => t + deltaTime)); break;
 					case "u_mouse": updaters.Add((_, u) => u.Set(name, window.MousePosition)); break;
 					case "imouse": updaters.Add((_, u) => u.Set(name, new Vector3(window.MousePosition.X, window.MousePosition.Y, button))); break;
 				}

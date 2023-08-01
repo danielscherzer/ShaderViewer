@@ -21,9 +21,7 @@ internal static class PersistenceSystem
 		PersistentSettings settings = new();
 		settings.AddFromGetterSetter("location", () => ((Vector2)window.Location).ToSystemNumerics(), t => window.Location = Clamp(t));
 		settings.AddFromGetterSetter("size", () => ((Vector2)window.Size).ToSystemNumerics(), t => window.Size = Clamp(t));
-		world.Set(new InputDelta());
 		settings.AddFromGetterSetter("inputDelta", () => world.Get<InputDelta>(), t => world.Set(t));
-		world.Set(new RecentFiles());
 		settings.AddFromGetterSetter("recentFiles", () => world.Get<RecentFiles>(), t => world.Set(t));
 		settings.Load();
 

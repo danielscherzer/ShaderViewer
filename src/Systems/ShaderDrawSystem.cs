@@ -1,4 +1,5 @@
-﻿using DefaultEcs.System;
+﻿using DefaultEcs;
+using DefaultEcs.System;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 using ShaderViewer.Component;
@@ -8,13 +9,21 @@ namespace ShaderViewer.Systems;
 
 internal sealed partial class ShaderDrawSystem : AEntitySetSystem<float>
 {
-	[Update]
-	private static void Update(in ShaderProgram shaderProgram, in Uniforms uniforms)
+	private readonly ShaderProgram defaultShader;
+
+	public ShaderDrawSystem(World world) : base(world, CreateEntityContainer, null, 0)
 	{
-		shaderProgram.Bind(); // because of this bind we can use GL.Uniform* commands
-		foreach ((string name, object objValue) in uniforms.Pairs())
+		defaultShader = ShaderResources.CompileLink(ShaderResources.defaultFragmentSourceCode);
+	}
+
+	[Update]
+	private void Update(in Entity entity, in ShaderProgram shaderProgram, in Uniforms uniforms)
+	{
+		var shader = entity.Has<Log>() ? defaultShader : shaderProgram;
+		shader.Bind(); // because of this bind we can use GL.Uniform* commands
+		foreach ((string name, object objValue) in uniforms.NameValue())
 		{
-			var loc = GL.GetUniformLocation(shaderProgram.Handle, name);
+			var loc = GL.GetUniformLocation(shader.Handle, name);
 			if (-1 != loc)
 			{
 				switch (objValue)
