@@ -3,7 +3,9 @@ using DefaultEcs.System;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Windowing.Desktop;
 using ShaderViewer.Component;
+using ShaderViewer.Components.Shader;
 using ShaderViewer.Systems;
+using ShaderViewer.Systems.Gui;
 using System;
 using System.Linq;
 using Zenseless.OpenTK;
@@ -13,8 +15,12 @@ using GameWindow window = new(GameWindowSettings.Default, ImmediateMode.NativeWi
 window.VSync = OpenTK.Windowing.Common.VSyncMode.On;
 
 using World world = new();
+world.Set(new TimeScale());
 world.Set(new InputDelta());
 world.Set(new RecentFiles());
+
+var shader = world.CreateEntity();
+shader.Set(new ShaderFile(string.Empty)); // needed if no shader is set, so we find the entity
 
 world.SubscribeComponentAdded((in Entity _, in ShaderFile shaderFile) => window.Title = shaderFile.Name);
 world.SubscribeComponentChanged((in Entity _, in ShaderFile _, in ShaderFile shaderFile) => window.Title = shaderFile.Name);
@@ -24,8 +30,6 @@ world.SubscribeReadShaderSourceSystem();
 world.SubscribeParseUniformsSystem();
 window.SubscribePersistenceSystem(world);
 
-var shader = world.CreateEntity();
-shader.Set(new ShaderFile(string.Empty)); // needed if no shader is set, so we find the entity
 
 var fileName = Environment.GetCommandLineArgs().ElementAtOrDefault(1);
 if (fileName is not null) shader.Set(new ShaderFile(fileName));

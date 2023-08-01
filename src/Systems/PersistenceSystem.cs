@@ -2,6 +2,8 @@
 using OpenTK.Mathematics;
 using OpenTK.Windowing.Desktop;
 using ShaderViewer.Component;
+using ShaderViewer.Components.Shader;
+using System.Linq;
 using Zenseless.OpenTK;
 using Zenseless.PersistentSettings;
 
@@ -24,6 +26,13 @@ internal static class PersistenceSystem
 		settings.AddFromGetterSetter("inputDelta", () => world.Get<InputDelta>(), t => world.Set(t));
 		settings.AddFromGetterSetter("recentFiles", () => world.Get<RecentFiles>(), t => world.Set(t));
 		settings.Load();
+
+		var query = world.GetEntities().With<ShaderFile>().AsEnumerable();
+		if (query.Any())
+		{
+			var entity = query.First();
+			entity.Set(new ShaderFile(world.Get<RecentFiles>().Names.Last()));
+		}
 
 		window.Closing += _ => settings.Store();
 

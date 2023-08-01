@@ -1,5 +1,5 @@
 ﻿using DefaultEcs;
-using ShaderViewer.Component;
+using ShaderViewer.Components.Shader;
 using System;
 using System.IO;
 using System.Reactive.Linq;

@@ -6,7 +6,7 @@ namespace ShaderViewer.Component;
 internal readonly struct RecentFiles
 {
 	public RecentFiles() : this(Enumerable.Empty<string>()) { }
-	
+
 	public RecentFiles(IEnumerable<string> names)
 	{
 		Names = names

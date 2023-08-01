@@ -1,6 +1,6 @@
 ﻿using DefaultEcs;
 using OpenTK.Mathematics;
-using ShaderViewer.Component;
+using ShaderViewer.Components.Shader;
 using System;
 
 namespace ShaderViewer.Systems;

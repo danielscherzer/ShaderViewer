@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace ShaderViewer.Component;
+namespace ShaderViewer.Components.Shader;
 
 internal class Uniforms
 {
@@ -11,7 +11,7 @@ internal class Uniforms
 		Dictionary[name] = value;
 	}
 
-	public void RegisterUpdater<TType>(string name, Func<TType, TType> updater) where TType : struct
+	public void UpdateValue<TType>(string name, Func<TType, TType> updater) where TType : struct
 	{
 		var obj = Dictionary[name];
 		if (obj is not TType) throw new ArgumentException("Invalid type");

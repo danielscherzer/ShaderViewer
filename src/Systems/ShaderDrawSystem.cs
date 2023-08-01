@@ -2,7 +2,7 @@
 using DefaultEcs.System;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
-using ShaderViewer.Component;
+using ShaderViewer.Components.Shader;
 using Zenseless.OpenTK;
 
 namespace ShaderViewer.Systems;

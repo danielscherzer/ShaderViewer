@@ -1,7 +1,7 @@
 ﻿using DefaultEcs;
 using DefaultEcs.System;
 using OpenTK.Windowing.Desktop;
-using ShaderViewer.Component;
+using ShaderViewer.Components.Shader;
 using Zenseless.OpenTK;
 
 namespace ShaderViewer.Systems;

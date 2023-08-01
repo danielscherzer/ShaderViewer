@@ -2,17 +2,19 @@
 using ImGuiNET;
 using OpenTK.Mathematics;
 using ShaderViewer.Component;
+using ShaderViewer.Components.Shader;
 using Zenseless.OpenTK.GUI;
 
-namespace ShaderViewer.Systems;
+namespace ShaderViewer.Systems.Gui;
 
 internal sealed partial class UniformGuiSystem : AEntitySetSystem<float>
 {
+	bool open = true;
 	[Update]
 	private void Update(in Uniforms uniforms)
 	{
 		float inputDelta = World.Get<InputDelta>();
-		if (ImGui.Begin("Uniforms", ImGuiWindowFlags.AlwaysAutoResize))
+		if (open && ImGui.Begin("Uniforms", ref open, ImGuiWindowFlags.AlwaysAutoResize))
 		{
 			foreach ((string name, object objValue) in uniforms.NameValue())
 			{
