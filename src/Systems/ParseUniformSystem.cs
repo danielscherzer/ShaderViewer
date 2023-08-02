@@ -5,7 +5,7 @@ using System;
 
 namespace ShaderViewer.Systems;
 
-internal static class ParseUniformsSystem
+internal static class ParseUniformSystem
 {
 	public static void SubscribeParseUniformsSystem(this World world)
 	{

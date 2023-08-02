@@ -6,7 +6,9 @@ using ShaderViewer.Component;
 using ShaderViewer.Components.Shader;
 using ShaderViewer.Systems;
 using ShaderViewer.Systems.Gui;
+using ShaderViewer.Systems.UniformUpdaters;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Zenseless.OpenTK;
 
@@ -37,7 +39,7 @@ if (fileName is not null) shader.Set(new ShaderFile(fileName));
 window.FileDrop += args => shader.Set(new ShaderFile(args.FileNames.First()));
 
 using SequentialSystem<float> systems = new(
-	new DefaultUniformUpdateSystem(world, window),
+	new UniformUpdateSystem(world, DefaultUniformUpdaters.Create(world, window)),
 	new ShaderLoadSystem(window.Context, world),
 	new ShaderDrawSystem(world),
 	new MenuGuiSystem(window, world),
@@ -46,7 +48,7 @@ using SequentialSystem<float> systems = new(
 	new Gui(window)
 );
 
-window.RenderFrame += _ => GL.Clear(ClearBufferMask.ColorBufferBit);
+window.RenderFrame += _ => GL.Clear(ClearBufferMask.ColorBufferBit); // if no shader is loaded clears away closed menu remnants ...
 window.RenderFrame += args => systems.Update((float)args.Time);
 window.RenderFrame += _ => window.SwapBuffers();
 

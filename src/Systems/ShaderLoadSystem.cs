@@ -31,7 +31,7 @@ internal sealed partial class ShaderLoadSystem : AEntitySetSystem<float>
 	{
 		try
 		{
-			//if (!context.IsCurrent) context.MakeCurrent();
+			//TODO: if (!context.IsCurrent) context.MakeCurrent();
 			if (entity.Has<ShaderProgram>()) entity.Get<ShaderProgram>().Dispose(); //TODO: Dispose should happen automatically with resource
 			entity.Set(ShaderResources.CompileLink(sourceCode));
 			entity.Remove<Log>();

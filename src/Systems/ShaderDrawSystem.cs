@@ -14,6 +14,7 @@ internal sealed partial class ShaderDrawSystem : AEntitySetSystem<float>
 	public ShaderDrawSystem(World world) : base(world, CreateEntityContainer, null, 0)
 	{
 		defaultShader = ShaderResources.CompileLink(ShaderResources.defaultFragmentSourceCode);
+		// TODO: Render shader in given resolution
 	}
 
 	[Update]
