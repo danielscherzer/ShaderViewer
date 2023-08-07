@@ -49,6 +49,12 @@ internal class Gui : ISystem<float>
 		_imgui.Dispose();
 	}
 
+	public static bool HasFocus()
+	{
+		var io = ImGui.GetIO();
+		return io.WantCaptureKeyboard || io.WantCaptureMouse;
+	}
+
 	private readonly ImGuiFacade _imgui;
 	private readonly GameWindow window;
 }

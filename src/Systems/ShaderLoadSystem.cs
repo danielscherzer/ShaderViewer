@@ -1,6 +1,5 @@
 ﻿using DefaultEcs;
 using DefaultEcs.System;
-using OpenTK.Windowing.Desktop;
 using ShaderViewer.Components.Shader;
 using Zenseless.OpenTK;
 
@@ -8,17 +7,15 @@ namespace ShaderViewer.Systems;
 
 internal sealed partial class ShaderLoadSystem : AEntitySetSystem<float>
 {
-	public ShaderLoadSystem(IGLFWGraphicsContext context, World world) : base(world, CreateEntityContainer, true)
+	public ShaderLoadSystem(/*IGLFWGraphicsContext context, */World world) : base(world, CreateEntityContainer, true)
 	{
-		this.context = context;
+		//this.context = context;
 
-		world.SubscribeComponentAdded((in Entity entity, in SourceCode sourceCode) => entity.Set(new CompileShader()));
-		world.SubscribeComponentChanged((in Entity entity, in SourceCode _, in SourceCode sourceCode) => entity.Set(new CompileShader()));
+		world.SubscribeEntityComponentAdded((in Entity entity, in SourceCode sourceCode) => entity.Set(new CompileShader()));
+		world.SubscribeEntityComponentChanged((in Entity entity, in SourceCode _, in SourceCode sourceCode) => entity.Set(new CompileShader()));
 		//world.SubscribeComponentAdded((in Entity entity, in SourceCode sourceCode) => Load(entity, sourceCode));
 		//world.SubscribeComponentChanged((in Entity entity, in SourceCode _, in SourceCode sourceCode) => Load(entity, sourceCode));
 	}
-
-	private readonly IGLFWGraphicsContext context;
 
 	[Update]
 	private static void Update(in Entity entity, in SourceCode sourceCode, in CompileShader _)

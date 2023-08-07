@@ -9,8 +9,8 @@ internal static class ParseUniformSystem
 {
 	public static void SubscribeParseUniformsSystem(this World world)
 	{
-		world.SubscribeComponentAdded((in Entity entity, in SourceCode sourceCode) => Parse(entity, sourceCode));
-		world.SubscribeComponentChanged((in Entity entity, in SourceCode _, in SourceCode sourceCode) => Parse(entity, sourceCode));
+		world.SubscribeEntityComponentAdded((in Entity entity, in SourceCode sourceCode) => Parse(entity, sourceCode));
+		world.SubscribeEntityComponentChanged((in Entity entity, in SourceCode _, in SourceCode sourceCode) => Parse(entity, sourceCode));
 	}
 
 	private static Type? GetType(string typeName)

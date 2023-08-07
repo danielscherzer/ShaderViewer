@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace ShaderViewer.Component;
+namespace ShaderViewer.Components;
 
 internal readonly struct RecentFiles
 {

@@ -1,8 +1,10 @@
 ﻿using ShaderViewer.Components.Shader;
+using System.Collections.Generic;
 
 namespace ShaderViewer.Systems.UniformUpdaters;
 
 internal interface IUniformUpdater
 {
-	void Update(string name, float deltaTime, Uniforms uniforms);
+	bool ShouldBeActive(IEnumerable<string> currentUniformNames);
+	void Update(float deltaTime, Uniforms uniforms);
 }

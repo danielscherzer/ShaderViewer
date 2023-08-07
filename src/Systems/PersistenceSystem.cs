@@ -1,7 +1,7 @@
 ﻿using DefaultEcs;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.Desktop;
-using ShaderViewer.Component;
+using ShaderViewer.Components;
 using ShaderViewer.Components.Shader;
 using System.Linq;
 using Zenseless.OpenTK;
@@ -21,10 +21,12 @@ internal static class PersistenceSystem
 		Vector2i Clamp(System.Numerics.Vector2 vec) => (Vector2i)Vector2.ComponentMin(monitorSize, vec.ToOpenTK());
 
 		PersistentSettings settings = new();
-		settings.AddFromGetterSetter("location", () => ((Vector2)window.Location).ToSystemNumerics(), t => window.Location = Clamp(t));
-		settings.AddFromGetterSetter("size", () => ((Vector2)window.Size).ToSystemNumerics(), t => window.Size = Clamp(t));
-		settings.AddFromGetterSetter("inputDelta", () => world.Get<InputDelta>(), t => world.Set(t));
-		settings.AddFromGetterSetter("recentFiles", () => world.Get<RecentFiles>(), t => world.Set(t));
+		settings.AddFromGetterSetter("location", () => ((Vector2)window.Location).ToSystemNumerics(), v => window.Location = Clamp(v));
+		settings.AddFromGetterSetter("size", () => ((Vector2)window.Size).ToSystemNumerics(), v => window.Size = Clamp(v));
+		settings.AddFromGetterSetter("inputDelta", () => world.Get<InputDelta>(), v => world.Set(v));
+		settings.AddFromGetterSetter("recentFiles", () => world.Get<RecentFiles>(), v => world.Set(v));
+		settings.AddFromGetterSetter("showMenu", () => world.Get<ShowMenu>(), v => world.Set(v));
+		settings.AddFromGetterSetter("resolution", () => world.Get<WindowResolution>(), v => world.Set(v));
 		settings.Load();
 
 		var query = world.GetEntities().With<ShaderFile>().AsEnumerable();

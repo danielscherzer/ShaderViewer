@@ -1,4 +1,4 @@
-﻿namespace ShaderViewer.Component;
+﻿namespace ShaderViewer.Components;
 
 internal readonly record struct TimeScale(float Value)
 {

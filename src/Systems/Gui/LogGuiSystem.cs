@@ -9,8 +9,11 @@ internal sealed partial class LogGuiSystem : AEntitySetSystem<float>
 	[Update]
 	private static void Update(in Log log)
 	{
-		ImGui.Begin("Messages", ImGuiWindowFlags.AlwaysAutoResize);
-		ImGui.Text(log.Message);
-		ImGui.End();
+		//TODO: Nicer output with warning/error categories
+		if (ImGui.Begin("Messages", ImGuiWindowFlags.NoCollapse))
+		{
+			ImGui.Text(log.Message);
+			ImGui.End();
+		}
 	}
 }
