@@ -3,12 +3,11 @@ using OpenTK.Mathematics;
 using OpenTK.Windowing.Desktop;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 using ShaderViewer.Components;
-using ShaderViewer.Components.Shader;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace ShaderViewer.Systems.UniformUpdaters;
+namespace ShaderViewer.Systems.Uniforms;
 
 internal class CameraUniformUpdater : IUniformUpdater
 {
@@ -21,12 +20,12 @@ internal class CameraUniformUpdater : IUniformUpdater
 		window.KeyUp += args => StopMovement(args.Key);
 	}
 
-	public static void ResetCamera(Uniforms uniforms)
+	public static void ResetCamera(Components.Shader.Uniforms uniforms)
 	{
 		Set(uniforms, Vector3.Zero, 0f, 0f);
 	}
 
-	public static void Set(Uniforms uniforms, Vector3 position, float heading, float tilt)
+	public static void Set(Components.Shader.Uniforms uniforms, Vector3 position, float heading, float tilt)
 	{
 		uniforms.Set(camPosX, position.X);
 		uniforms.Set(camPosY, position.Y);
@@ -40,7 +39,7 @@ internal class CameraUniformUpdater : IUniformUpdater
 		return currentUniformNames.Contains(camPosX);
 	}
 
-	public void Update(float deltaTime, Uniforms uniforms)
+	public void Update(float deltaTime, Components.Shader.Uniforms uniforms)
 	{
 		if (guiHasFocus()) return;
 		var x = uniforms.Get<float>(camPosX);

@@ -1,11 +1,10 @@
 ﻿using DefaultEcs;
 using OpenTK.Windowing.Desktop;
 using ShaderViewer.Components;
-using ShaderViewer.Components.Shader;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace ShaderViewer.Systems.UniformUpdaters;
+namespace ShaderViewer.Systems.Uniforms;
 
 internal class MouseUniformUpdater : IUniformUpdater
 {
@@ -22,7 +21,7 @@ internal class MouseUniformUpdater : IUniformUpdater
 
 	public virtual bool ShouldBeActive(IEnumerable<string> currentUniformNames) => currentUniformNames.Contains(name);
 
-	public virtual void Update(float _, Uniforms uniforms)
+	public virtual void Update(float _, Components.Shader.Uniforms uniforms)
 	{
 		uniforms.Set(name, scaleFactor * window.MousePosition);
 	}

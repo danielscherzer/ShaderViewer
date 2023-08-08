@@ -9,8 +9,7 @@ internal static class ParseUniformSystem
 {
 	public static void SubscribeParseUniformsSystem(this World world)
 	{
-		world.SubscribeEntityComponentAdded((in Entity entity, in SourceCode sourceCode) => Parse(entity, sourceCode));
-		world.SubscribeEntityComponentChanged((in Entity entity, in SourceCode _, in SourceCode sourceCode) => Parse(entity, sourceCode));
+		world.SubscribeEntityComponentAddedOrChanged((in Entity entity, in SourceCode sourceCode) => Parse(entity, sourceCode));
 	}
 
 	private static Type? GetType(string typeName)
@@ -31,7 +30,7 @@ internal static class ParseUniformSystem
 	private static void Parse(Entity entity, string shaderSource)
 	{
 		var uniformDeclaration = GLSLhelper.Extract.Uniforms(GLSLhelper.Transformation.RemoveComments(shaderSource));
-		Uniforms uniforms = new();
+		Components.Shader.Uniforms uniforms = new();
 		foreach ((string typeName, string name) in uniformDeclaration)
 		{
 			var type = GetType(typeName);

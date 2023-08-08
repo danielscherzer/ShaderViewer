@@ -1,6 +1,6 @@
 ﻿using OpenTK.Mathematics;
 
-namespace ShaderViewer.Systems.UniformUpdaters;
+namespace ShaderViewer.Systems.Uniforms;
 
 public static class FirstPersonCamera
 {

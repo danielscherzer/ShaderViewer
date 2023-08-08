@@ -11,10 +11,8 @@ internal sealed partial class ShaderLoadSystem : AEntitySetSystem<float>
 	{
 		//this.context = context;
 
-		world.SubscribeEntityComponentAdded((in Entity entity, in SourceCode sourceCode) => entity.Set(new CompileShader()));
-		world.SubscribeEntityComponentChanged((in Entity entity, in SourceCode _, in SourceCode sourceCode) => entity.Set(new CompileShader()));
-		//world.SubscribeComponentAdded((in Entity entity, in SourceCode sourceCode) => Load(entity, sourceCode));
-		//world.SubscribeComponentChanged((in Entity entity, in SourceCode _, in SourceCode sourceCode) => Load(entity, sourceCode));
+		world.SubscribeEntityComponentAddedOrChanged((in Entity entity, in SourceCode sourceCode) => entity.Set(new CompileShader()));
+		//world.SubscribeEntityComponentAddedOrChanged((in Entity entity, in SourceCode sourceCode) => Load(entity, sourceCode));
 	}
 
 	[Update]

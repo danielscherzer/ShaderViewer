@@ -24,7 +24,7 @@ internal sealed partial class ShaderDrawSystem : AEntitySetSystem<float>
 			windowResolution = resolution;
 			frameBuffer.Dispose();
 			frameBuffer = new(true);
-			var res = resolution.CalcShaderResolution();
+			var res = resolution.CalcRenderResolution();
 			frameBuffer.Attach(new Texture2D(res.X, res.Y), FramebufferAttachment.ColorAttachment0);
 		}
 		world.SubscribeWorldComponentAdded((World _, in WindowResolution resolution) => ChangeResolution(resolution));
@@ -32,7 +32,7 @@ internal sealed partial class ShaderDrawSystem : AEntitySetSystem<float>
 	}
 
 	[Update]
-	private void Update(in Entity entity, in ShaderProgram shaderProgram, in Uniforms uniforms)
+	private void Update(in Entity entity, in ShaderProgram shaderProgram, in Components.Shader.Uniforms uniforms)
 	{
 		var shader = entity.Has<Log>() ? defaultShader : shaderProgram;
 		var localUniforms = uniforms;
@@ -56,7 +56,7 @@ internal sealed partial class ShaderDrawSystem : AEntitySetSystem<float>
 			}
 			GL.DrawArrays(PrimitiveType.TriangleStrip, 0, 4);
 		}
-		if(1f != windowResolution.ScaleFactor)
+		if (1f != windowResolution.ScaleFactor)
 		{
 			frameBuffer.Draw(Draw);
 			var tex = frameBuffer.GetTexture(FramebufferAttachment.ColorAttachment0);

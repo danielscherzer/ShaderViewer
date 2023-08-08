@@ -3,8 +3,7 @@ using DefaultEcs.System;
 using ImGuiNET;
 using OpenTK.Mathematics;
 using ShaderViewer.Components;
-using ShaderViewer.Components.Shader;
-using ShaderViewer.Systems.UniformUpdaters;
+using ShaderViewer.Systems.Uniforms;
 using System.Linq;
 using Zenseless.OpenTK.GUI;
 
@@ -20,7 +19,7 @@ internal sealed partial class UniformGuiSystem : AEntitySetSystem<float>
 	}
 
 	[Update]
-	private void Update(in Uniforms uniforms)
+	private void Update(in Components.Shader.Uniforms uniforms)
 	{
 		if (!World.Get<ShowMenu>()) return;
 		float inputDelta = World.Get<InputDelta>();

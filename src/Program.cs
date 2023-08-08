@@ -6,7 +6,7 @@ using ShaderViewer.Components;
 using ShaderViewer.Components.Shader;
 using ShaderViewer.Systems;
 using ShaderViewer.Systems.Gui;
-using ShaderViewer.Systems.UniformUpdaters;
+using ShaderViewer.Systems.Uniforms;
 using System;
 using System.Linq;
 using Zenseless.OpenTK;
@@ -25,8 +25,7 @@ world.Set(new WindowResolution());
 var shader = world.CreateEntity();
 shader.Set(new ShaderFile(string.Empty)); // needed if no shader is set, so we find the entity
 
-world.SubscribeEntityComponentAdded((in Entity _, in ShaderFile shaderFile) => window.Title = shaderFile.Name);
-world.SubscribeEntityComponentChanged((in Entity _, in ShaderFile _, in ShaderFile shaderFile) => window.Title = shaderFile.Name);
+world.SubscribeEntityComponentAddedOrChanged((in Entity _, in ShaderFile shaderFile) => window.Title = shaderFile.Name);
 
 void AddUpdater<TType>(TType updater) where TType : IUniformUpdater
 {
@@ -37,12 +36,12 @@ void AddUpdater<TType>(TType updater) where TType : IUniformUpdater
 AddUpdater(new ResolutionUniformUpdater(world)); // TODO: Read-only updater?
 AddUpdater(new MouseUniformUpdater(window, world));
 AddUpdater(new MouseButtonUniformUpdater(window, world)); // TODO: Read-only updater?
-AddUpdater(new TimeUniformUpdater(world));
 AddUpdater(new CameraUniformUpdater(window, world, Gui.HasFocus));
 
 //TODO: render shader not behind main menu bar
 using SequentialSystem<float> systems = new(
 	new UniformUpdateSystem(world),
+	new TimeUniformSystem(world),
 	new ShaderLoadSystem(world),
 	new ShaderDrawSystem(world),
 	new MenuGuiSystem(window, world),

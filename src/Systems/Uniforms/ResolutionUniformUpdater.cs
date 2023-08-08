@@ -1,22 +1,21 @@
 ﻿using DefaultEcs;
 using OpenTK.Mathematics;
 using ShaderViewer.Components;
-using ShaderViewer.Components.Shader;
 using System.Collections.Generic;
 using System.Linq;
 using Zenseless.OpenTK;
 
-namespace ShaderViewer.Systems.UniformUpdaters;
+namespace ShaderViewer.Systems.Uniforms;
 
 internal class ResolutionUniformUpdater : IUniformUpdater
 {
 	public ResolutionUniformUpdater(World world)
 	{
-		shaderResolution = world.Get<WindowResolution>().CalcShaderResolution().ToVector2();
+		renderResolution = world.Get<WindowResolution>().CalcRenderResolution().ToVector2();
 
 		void ChangeResolution(WindowResolution windowResolution)
 		{
-			shaderResolution = windowResolution.CalcShaderResolution().ToVector2();
+			renderResolution = windowResolution.CalcRenderResolution().ToVector2();
 		}
 		world.SubscribeWorldComponentAdded((World _, in WindowResolution resolution) => ChangeResolution(resolution));
 		world.SubscribeWorldComponentChanged((World _, in WindowResolution _, in WindowResolution resolution) => ChangeResolution(resolution));
@@ -36,12 +35,12 @@ internal class ResolutionUniformUpdater : IUniformUpdater
 		return false;
 	}
 
-	public void Update(float _, Uniforms uniforms)
+	public void Update(float _, Components.Shader.Uniforms __)
 	{
-		uniforms.Set(currentName, shaderResolution);
+		uniforms.Set(currentName, renderResolution);
 	}
 
 	private static readonly string[] names = new string[] { "u_resolution", "iResolution" };
 	private string currentName = names[0];
-	private Vector2 shaderResolution;
+	private Vector2 renderResolution;
 }

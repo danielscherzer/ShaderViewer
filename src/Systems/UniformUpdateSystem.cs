@@ -1,7 +1,6 @@
 ﻿using DefaultEcs;
 using DefaultEcs.System;
-using ShaderViewer.Components.Shader;
-using ShaderViewer.Systems.UniformUpdaters;
+using ShaderViewer.Systems.Uniforms;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -12,20 +11,19 @@ internal sealed partial class UniformUpdateSystem : AEntitySetSystem<float>
 	public UniformUpdateSystem(World world) : base(world, CreateEntityContainer, false)
 	{
 		var defaultUniformUpdaters = world.GetEntities().With<IUniformUpdater>().AsMap<IUniformUpdater>();
-		void ActiveUpdaters(Uniforms uniforms)
+		void ActiveUpdaters(Components.Shader.Uniforms uniforms)
 		{
 			activeUpdaters.Clear();
 			activeUpdaters.AddRange(defaultUniformUpdaters.Keys.Where(updater => updater.ShouldBeActive(uniforms.Dictionary.Keys)));
 		}
 
-		world.SubscribeEntityComponentAdded((in Entity _, in Uniforms component) => ActiveUpdaters(component));
-		world.SubscribeEntityComponentChanged((in Entity _, in Uniforms _, in Uniforms c) => ActiveUpdaters(c));
+		world.SubscribeEntityComponentAddedOrChanged((in Entity _, in Components.Shader.Uniforms component) => ActiveUpdaters(component));
 	}
 
 	private readonly List<IUniformUpdater> activeUpdaters = new();
 
 	[Update]
-	private void Update(float deltaTime, in Uniforms uniforms)
+	private void Update(float deltaTime, in Components.Shader.Uniforms uniforms)
 	{
 		foreach (var updater in activeUpdaters)
 		{

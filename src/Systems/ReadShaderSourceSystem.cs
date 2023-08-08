@@ -46,8 +46,7 @@ internal static class ReadShaderSourceSystem
 			LoadFile(fileName);
 		}
 
-		world.SubscribeEntityComponentAdded((in Entity entity, in ShaderFile shaderFile) => Load(entity, shaderFile.Name));
-		world.SubscribeEntityComponentChanged((in Entity entity, in ShaderFile _, in ShaderFile shaderFile) => Load(entity, shaderFile.Name));
+		world.SubscribeEntityComponentAddedOrChanged((in Entity entity, in ShaderFile shaderFile) => Load(entity, shaderFile.Name));
 	}
 
 	private static IObservable<string> CreateFileSystemWatcherObservable(string fileName)
