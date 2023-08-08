@@ -26,21 +26,13 @@ shader.Set(new ShaderFile(string.Empty)); // needed if no shader is set, so we f
 
 world.SubscribeEntityComponentAddedOrChanged((in Entity _, in ShaderFile shaderFile) => window.Title = shaderFile.Name);
 
-void AddUpdater<TType>(TType updater) where TType : IUniformUpdater
-{
-	var entity = world.CreateEntity();
-	entity.Set(updater);
-	entity.Set<IUniformUpdater>(updater);
-}
-AddUpdater(new ResolutionUniformUpdater(world)); // TODO: Read-only updater?
-AddUpdater(new MouseUniformUpdater(window, world));
-AddUpdater(new MouseButtonUniformUpdater(window, world)); // TODO: Read-only updater?
-AddUpdater(new CameraUniformUpdater(window, world, Gui.HasFocus));
-
 //TODO: render shader not behind main menu bar
 using SequentialSystem<float> systems = new(
-	new UniformUpdateSystem(world),
 	new TimeUniformSystem(world),
+	new ResolutionUniformSystem(world),
+	new MouseUniformSystem(window, world),
+	new MouseButtonUniformSystem(window, world),
+	new CameraUniformSystem(window, world, Gui.HasFocus),
 	new ShaderLoadSystem(world),
 	new ShaderDrawSystem(world),
 	new MenuGuiSystem(window, world),

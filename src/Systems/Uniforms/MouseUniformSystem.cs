@@ -1,14 +1,12 @@
 ﻿using DefaultEcs;
 using OpenTK.Windowing.Desktop;
 using ShaderViewer.Components;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace ShaderViewer.Systems.Uniforms;
 
-internal class MouseUniformUpdater : IUniformUpdater
+internal class MouseUniformSystem : UniformsSystem
 {
-	public MouseUniformUpdater(GameWindow window, World world)
+	public MouseUniformSystem(GameWindow window, World world): base(world)
 	{
 		this.window = window;
 		void ChangeScale(WindowResolution windowResolution)
@@ -18,9 +16,9 @@ internal class MouseUniformUpdater : IUniformUpdater
 		world.SubscribeWorldComponentAddedOrChanged((World _, in WindowResolution resolution) => ChangeScale(resolution));
 	}
 
-	public virtual bool ShouldBeActive(IEnumerable<string> currentUniformNames) => currentUniformNames.Contains(name);
+	protected override bool ShouldEnable(Components.Uniforms uniforms) => uniforms.Dictionary.ContainsKey(name);
 
-	public virtual void Update(float _, Components.Uniforms uniforms)
+	protected override void Update(float deltaTime, Components.Uniforms uniforms)
 	{
 		uniforms.Set(name, scaleFactor * window.MousePosition);
 	}

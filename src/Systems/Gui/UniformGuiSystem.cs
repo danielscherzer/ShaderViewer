@@ -11,13 +11,6 @@ namespace ShaderViewer.Systems.Gui;
 
 internal sealed partial class UniformGuiSystem : AEntitySetSystem<float>
 {
-	private readonly EntityMap<CameraUniformUpdater> cameraUniformUpdater;
-
-	public UniformGuiSystem(World world) : base(world, CreateEntityContainer, null, 0)
-	{
-		cameraUniformUpdater = world.GetEntities().With<CameraUniformUpdater>().AsMap<CameraUniformUpdater>();
-	}
-
 	[Update]
 	private void Update(in Components.Uniforms uniforms)
 	{
@@ -36,12 +29,12 @@ internal sealed partial class UniformGuiSystem : AEntitySetSystem<float>
 					case Vector4 value: ImGuiHelper.SliderFloat(name, ref value); uniforms.Set(name, value); break;
 				}
 			}
-			if (cameraUniformUpdater.Keys.Any() && cameraUniformUpdater.Keys.First().ShouldBeActive(uniforms.Dictionary.Keys))
+			if (World.Has<ShowCameraReset>())
 			{
 				ImGui.Separator();
 				if (ImGui.MenuItem("Reset Camera"))
 				{
-					CameraUniformUpdater.ResetCamera(uniforms);
+					CameraUniformSystem.ResetCamera(uniforms);
 				}
 			}
 			ImGui.EndMenu();

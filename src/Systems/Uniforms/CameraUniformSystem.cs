@@ -9,13 +9,12 @@ using System.Linq;
 
 namespace ShaderViewer.Systems.Uniforms;
 
-internal class CameraUniformUpdater : IUniformUpdater
+internal class CameraUniformSystem : UniformsSystem
 {
-	public CameraUniformUpdater(GameWindow window, World world, Func<bool> guiHasFocus)
+	public CameraUniformSystem(GameWindow window, World world, Func<bool> guiHasFocus) : base(world)
 	{
 		this.guiHasFocus = guiHasFocus;
 		this.window = window;
-		this.world = world;
 		window.KeyDown += args => StartMovement(args.Key);
 		window.KeyUp += args => StopMovement(args.Key);
 	}
@@ -34,12 +33,21 @@ internal class CameraUniformUpdater : IUniformUpdater
 		uniforms.Set(camRotY, heading);
 	}
 
-	public bool ShouldBeActive(IEnumerable<string> currentUniformNames)
+	protected override bool ShouldEnable(Components.Uniforms uniforms)
 	{
-		return currentUniformNames.Contains(camPosX);
+		var active = uniforms.Dictionary.ContainsKey(camPosX);
+		if (active)
+		{
+			World.Set(new ShowCameraReset());
+		}
+		else
+		{
+			World.Remove<ShowCameraReset>();
+		}
+		return active;
 	}
 
-	public void Update(float deltaTime, Components.Uniforms uniforms)
+	protected override void Update(float deltaTime, Components.Uniforms uniforms)
 	{
 		if (guiHasFocus()) return;
 		var x = uniforms.Get<float>(camPosX);
@@ -66,12 +74,11 @@ internal class CameraUniformUpdater : IUniformUpdater
 	private const string camRotX = "iCamRotX";
 	private const string camRotY = "iCamRotY";
 	private readonly GameWindow window;
-	private readonly World world;
 	private readonly Func<bool> guiHasFocus;
 
 	private void StartMovement(Keys key)
 	{
-		float inputDelta = world.Get<InputDelta>();
+		float inputDelta = World.Get<InputDelta>();
 		var speed = 300f * inputDelta;
 		switch (key)
 		{
