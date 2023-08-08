@@ -21,10 +21,7 @@ world.Set(new RecentFiles());
 world.Set(new ShowMenu());
 world.Set(new WindowResolution());
 
-var shader = world.CreateEntity();
-shader.Set(new ShaderFile()); // needed if no shader is set, so we find the entity
-
-world.SubscribeEntityComponentAddedOrChanged((in Entity _, in ShaderFile shaderFile) => window.Title = shaderFile.Name);
+world.SubscribeWorldComponentAddedOrChanged((World _, in ShaderFile shaderFile) => window.Title = shaderFile.Name);
 
 //TODO: render shader not behind main menu bar
 using SequentialSystem<float> systems = new(
@@ -52,8 +49,8 @@ world.SubscribeParseUniformsSystem();
 window.SubscribePersistenceSystem(world);
 
 var fileName = Environment.GetCommandLineArgs().ElementAtOrDefault(1);
-if (fileName is not null) shader.Set(new ShaderFile(fileName));
+if (fileName is not null) world.Set(new ShaderFile(fileName));
 
-window.FileDrop += args => shader.Set(new ShaderFile(args.FileNames.First()));
+window.FileDrop += args => world.Set(new ShaderFile(args.FileNames.First()));
 
 window.Run();

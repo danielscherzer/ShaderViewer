@@ -61,12 +61,7 @@ internal class MenuGuiSystem : ISystem<float>
 				{
 					if (ImGui.MenuItem(fileName))
 					{
-						var query = world.GetEntities().With<ShaderFile>().AsEnumerable();
-						if (query.Any())
-						{
-							var entity = query.First();
-							entity.Set(new ShaderFile(fileName));
-						}
+						world.Set(new ShaderFile(fileName));
 					}
 				}
 				//if(recentFiles.Names.Any()) ImGui.Separator();

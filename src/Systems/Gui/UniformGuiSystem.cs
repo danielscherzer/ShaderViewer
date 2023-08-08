@@ -14,7 +14,7 @@ internal sealed partial class UniformGuiSystem : AComponentSystem<float, Compone
 	{
 	}
 
-	protected override void Update(float elapsedTime, ref Components.Uniforms uniforms)
+	protected override void Update(float _, ref Components.Uniforms uniforms)
 	{
 		if (!World.Get<ShowMenu>()) return;
 		float inputDelta = World.Get<InputDelta>();

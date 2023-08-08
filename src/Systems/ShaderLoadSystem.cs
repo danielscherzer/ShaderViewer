@@ -5,26 +5,25 @@ using Zenseless.OpenTK;
 
 namespace ShaderViewer.Systems;
 
-internal sealed partial class ShaderLoadSystem : AEntitySetSystem<float>
+internal sealed partial class ShaderLoadSystem : AComponentSystem<float, SourceCode>
 {
-	public ShaderLoadSystem(World world) : base(world, CreateEntityContainer, true)
+	public ShaderLoadSystem(World world) : base(world)
 	{
-		world.SubscribeEntityComponentAddedOrChanged((in Entity entity, in SourceCode sourceCode) => IsEnabled = true);
+		world.SubscribeWorldComponentAddedOrChanged((World _, in SourceCode sourceCode) => IsEnabled = true);
 	}
 
-	[Update]
-	private void Update(in Entity entity, in SourceCode sourceCode)
+	protected override void Update(float _, ref SourceCode sourceCode)
 	{
-		Load(entity, sourceCode);
+		Load(sourceCode);
 		IsEnabled = false;
 	}
 
-	private void Load(in Entity entity, in SourceCode sourceCode)
+	private void Load(in SourceCode sourceCode)
 	{
 		try
 		{
-			if (entity.Has<ShaderProgram>()) entity.Get<ShaderProgram>().Dispose(); //TODO: Dispose should happen automatically with resource
-			entity.Set(ShaderResources.CompileLink(sourceCode));
+			if (World.Has<ShaderProgram>()) World.Get<ShaderProgram>().Dispose(); //TODO: Dispose should happen automatically with resource
+			World.Set(ShaderResources.CompileLink(sourceCode));
 			World.Remove<Log>();
 		}
 		catch (ShaderException e)

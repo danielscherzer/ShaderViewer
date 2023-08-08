@@ -28,12 +28,7 @@ internal static class PersistenceSystem
 		settings.AddFromGetterSetter("resolution", () => world.Get<WindowResolution>(), v => world.Set(v));
 		settings.Load();
 
-		var query = world.GetEntities().With<ShaderFile>().AsEnumerable();
-		if (query.Any())
-		{
-			var entity = query.First();
-			entity.Set(new ShaderFile(world.Get<RecentFiles>().Names.Last()));
-		}
+		world.Set(new ShaderFile(world.Get<RecentFiles>().Names.LastOrDefault(string.Empty)));
 
 		window.Closing += _ => settings.Store();
 

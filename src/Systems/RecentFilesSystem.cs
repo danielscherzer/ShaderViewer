@@ -14,6 +14,6 @@ internal static class RecentFilesSystem
 			world.Set(new RecentFiles(recentFiles.Append(name)));
 		}
 
-		world.SubscribeEntityComponentAddedOrChanged((in Entity entity, in ShaderFile shaderFile) => Update(shaderFile.Name));
+		world.SubscribeWorldComponentAddedOrChanged((World _, in ShaderFile shaderFile) => Update(shaderFile.Name));
 	}
 }

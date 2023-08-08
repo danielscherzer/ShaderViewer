@@ -7,13 +7,13 @@ using Zenseless.OpenTK;
 
 namespace ShaderViewer.Systems;
 
-internal sealed partial class ShaderDrawSystem : AEntitySetSystem<float>
+internal sealed partial class ShaderDrawSystem : AComponentSystem<float, ShaderProgram>
 {
 	private FrameBuffer frameBuffer;
 	private WindowResolution windowResolution;
 	private readonly ShaderProgram defaultShader;
 
-	public ShaderDrawSystem(World world) : base(world, CreateEntityContainer, null, 0)
+	public ShaderDrawSystem(World world) : base(world)
 	{
 		frameBuffer = new(true);
 		windowResolution = world.Get<WindowResolution>();
@@ -29,8 +29,7 @@ internal sealed partial class ShaderDrawSystem : AEntitySetSystem<float>
 		world.SubscribeWorldComponentAddedOrChanged((World _, in WindowResolution resolution) => ChangeResolution(resolution));
 	}
 
-	[Update]
-	private void Update(in ShaderProgram shaderProgram)
+	protected override void Update(float _, ref ShaderProgram shaderProgram)
 	{
 		var shader = World.Has<Log>() ? defaultShader : shaderProgram;
 		var localUniforms = World.Get<Components.Uniforms>();

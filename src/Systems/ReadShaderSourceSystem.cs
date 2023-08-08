@@ -10,7 +10,7 @@ internal static class ReadShaderSourceSystem
 {
 	public static void SubscribeReadShaderSourceSystem(this World world)
 	{
-		void Load(Entity entity, string fileName)
+		void Load(string fileName)
 		{
 			void LoadFile(string fileName)
 			{
@@ -28,14 +28,14 @@ internal static class ReadShaderSourceSystem
 					}
 
 					sourceCode = GLSLhelper.Transformation.ExpandIncludes(sourceCode, GetIncludeCode);
-					entity.Set(new SourceCode(sourceCode));
-					if (entity.Has<IDisposable>()) entity.Get<IDisposable>().Dispose();
+					world.Set(new SourceCode(sourceCode));
+					if (world.Has<IDisposable>()) world.Get<IDisposable>().Dispose();
 					var fileChangeSubscription = observable.Merge(CreateFileSystemWatcherObservable(fileName))
 						.Throttle(TimeSpan.FromSeconds(0.1f))
 						.Delay(TimeSpan.FromSeconds(0.1f))
 						//.ObserveOn(Scheduler.CurrentThread)
 						.Subscribe(fileName => LoadFile(fileName));
-					entity.Set(fileChangeSubscription);
+					world.Set(fileChangeSubscription);
 				}
 				catch (Exception e)
 				{
@@ -46,7 +46,7 @@ internal static class ReadShaderSourceSystem
 			LoadFile(fileName);
 		}
 
-		world.SubscribeEntityComponentAddedOrChanged((in Entity entity, in ShaderFile shaderFile) => Load(entity, shaderFile.Name));
+		world.SubscribeWorldComponentAddedOrChanged((World _, in ShaderFile shaderFile) => Load(shaderFile.Name));
 	}
 
 	private static IObservable<string> CreateFileSystemWatcherObservable(string fileName)
