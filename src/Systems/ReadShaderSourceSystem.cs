@@ -2,7 +2,6 @@
 using ShaderViewer.Components;
 using System;
 using System.IO;
-using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 
 namespace ShaderViewer.Systems;

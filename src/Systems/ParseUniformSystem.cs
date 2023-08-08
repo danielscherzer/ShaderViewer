@@ -9,7 +9,7 @@ internal static class ParseUniformSystem
 {
 	public static void SubscribeParseUniformsSystem(this World world)
 	{
-		world.SubscribeEntityComponentAddedOrChanged((in Entity entity, in SourceCode sourceCode) => Parse(entity, sourceCode));
+		world.SubscribeEntityComponentAddedOrChanged((in Entity entity, in SourceCode sourceCode) => Parse(world, sourceCode));
 	}
 
 	private static Type? GetType(string typeName)
@@ -27,7 +27,7 @@ internal static class ParseUniformSystem
 		};
 	}
 
-	private static void Parse(Entity entity, string shaderSource)
+	private static void Parse(World world, string shaderSource)
 	{
 		var uniformDeclaration = GLSLhelper.Extract.Uniforms(GLSLhelper.Transformation.RemoveComments(shaderSource));
 		Components.Uniforms uniforms = new();
@@ -41,6 +41,6 @@ internal static class ParseUniformSystem
 				uniforms.Set(name, instance);
 			}
 		}
-		entity.Set(uniforms);
+		world.Set(uniforms);
 	}
 }

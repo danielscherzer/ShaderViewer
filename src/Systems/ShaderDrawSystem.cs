@@ -30,10 +30,10 @@ internal sealed partial class ShaderDrawSystem : AEntitySetSystem<float>
 	}
 
 	[Update]
-	private void Update(in Entity entity, in ShaderProgram shaderProgram, in Components.Uniforms uniforms)
+	private void Update(in ShaderProgram shaderProgram)
 	{
 		var shader = World.Has<Log>() ? defaultShader : shaderProgram;
-		var localUniforms = uniforms;
+		var localUniforms = World.Get<Components.Uniforms>();
 		void Draw()
 		{
 			shader.Bind(); // because of this bind we can use GL.Uniform* commands

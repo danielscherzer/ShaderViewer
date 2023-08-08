@@ -22,7 +22,7 @@ world.Set(new ShowMenu());
 world.Set(new WindowResolution());
 
 var shader = world.CreateEntity();
-shader.Set(new ShaderFile(string.Empty)); // needed if no shader is set, so we find the entity
+shader.Set(new ShaderFile()); // needed if no shader is set, so we find the entity
 
 world.SubscribeEntityComponentAddedOrChanged((in Entity _, in ShaderFile shaderFile) => window.Title = shaderFile.Name);
 

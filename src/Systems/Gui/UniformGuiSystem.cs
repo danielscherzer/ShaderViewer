@@ -4,15 +4,17 @@ using ImGuiNET;
 using OpenTK.Mathematics;
 using ShaderViewer.Components;
 using ShaderViewer.Systems.Uniforms;
-using System.Linq;
 using Zenseless.OpenTK.GUI;
 
 namespace ShaderViewer.Systems.Gui;
 
-internal sealed partial class UniformGuiSystem : AEntitySetSystem<float>
+internal sealed partial class UniformGuiSystem : AComponentSystem<float, Components.Uniforms>
 {
-	[Update]
-	private void Update(in Components.Uniforms uniforms)
+	public UniformGuiSystem(World world) : base(world)
+	{
+	}
+
+	protected override void Update(float elapsedTime, ref Components.Uniforms uniforms)
 	{
 		if (!World.Get<ShowMenu>()) return;
 		float inputDelta = World.Get<InputDelta>();
