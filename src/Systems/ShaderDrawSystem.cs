@@ -32,7 +32,7 @@ internal sealed partial class ShaderDrawSystem : AEntitySetSystem<float>
 	[Update]
 	private void Update(in Entity entity, in ShaderProgram shaderProgram, in Components.Uniforms uniforms)
 	{
-		var shader = entity.Has<Log>() ? defaultShader : shaderProgram;
+		var shader = World.Has<Log>() ? defaultShader : shaderProgram;
 		var localUniforms = uniforms;
 		void Draw()
 		{

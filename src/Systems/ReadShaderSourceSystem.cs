@@ -11,7 +11,7 @@ internal static class ReadShaderSourceSystem
 {
 	public static void SubscribeReadShaderSourceSystem(this World world)
 	{
-		static void Load(Entity entity, string fileName)
+		void Load(Entity entity, string fileName)
 		{
 			void LoadFile(string fileName)
 			{
@@ -40,7 +40,7 @@ internal static class ReadShaderSourceSystem
 				}
 				catch (Exception e)
 				{
-					entity.Set(new Log(e.Message));
+					world.Set(new Log(e.Message));
 				}
 			}
 			if (!File.Exists(fileName)) return;

@@ -19,17 +19,17 @@ internal sealed partial class ShaderLoadSystem : AEntitySetSystem<float>
 		IsEnabled = false;
 	}
 
-	private static void Load(in Entity entity, in SourceCode sourceCode)
+	private void Load(in Entity entity, in SourceCode sourceCode)
 	{
 		try
 		{
 			if (entity.Has<ShaderProgram>()) entity.Get<ShaderProgram>().Dispose(); //TODO: Dispose should happen automatically with resource
 			entity.Set(ShaderResources.CompileLink(sourceCode));
-			entity.Remove<Log>();
+			World.Remove<Log>();
 		}
 		catch (ShaderException e)
 		{
-			entity.Set(new Log(e.Message));
+			World.Set(new Log(e.Message));
 		}
 	}
 }
