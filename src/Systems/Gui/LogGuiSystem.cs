@@ -1,6 +1,6 @@
 ﻿using DefaultEcs.System;
 using ImGuiNET;
-using ShaderViewer.Components.Shader;
+using ShaderViewer.Components;
 
 namespace ShaderViewer.Systems.Gui;
 

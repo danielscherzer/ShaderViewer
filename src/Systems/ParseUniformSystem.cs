@@ -1,6 +1,6 @@
 ﻿using DefaultEcs;
 using OpenTK.Mathematics;
-using ShaderViewer.Components.Shader;
+using ShaderViewer.Components;
 using System;
 
 namespace ShaderViewer.Systems;
@@ -30,7 +30,7 @@ internal static class ParseUniformSystem
 	private static void Parse(Entity entity, string shaderSource)
 	{
 		var uniformDeclaration = GLSLhelper.Extract.Uniforms(GLSLhelper.Transformation.RemoveComments(shaderSource));
-		Components.Shader.Uniforms uniforms = new();
+		Components.Uniforms uniforms = new();
 		foreach ((string typeName, string name) in uniformDeclaration)
 		{
 			var type = GetType(typeName);

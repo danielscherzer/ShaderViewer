@@ -15,13 +15,12 @@ internal class MouseUniformUpdater : IUniformUpdater
 		{
 			scaleFactor = windowResolution.ScaleFactor;
 		}
-		world.SubscribeWorldComponentAdded((World _, in WindowResolution resolution) => ChangeScale(resolution));
-		world.SubscribeWorldComponentChanged((World _, in WindowResolution _, in WindowResolution resolution) => ChangeScale(resolution));
+		world.SubscribeWorldComponentAddedOrChanged((World _, in WindowResolution resolution) => ChangeScale(resolution));
 	}
 
 	public virtual bool ShouldBeActive(IEnumerable<string> currentUniformNames) => currentUniformNames.Contains(name);
 
-	public virtual void Update(float _, Components.Shader.Uniforms uniforms)
+	public virtual void Update(float _, Components.Uniforms uniforms)
 	{
 		uniforms.Set(name, scaleFactor * window.MousePosition);
 	}

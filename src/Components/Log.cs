@@ -1,3 +1,3 @@
-﻿namespace ShaderViewer.Components.Shader;
+﻿namespace ShaderViewer.Components;
 
 internal readonly record struct Log(string Message);

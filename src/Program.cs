@@ -3,7 +3,6 @@ using DefaultEcs.System;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Windowing.Desktop;
 using ShaderViewer.Components;
-using ShaderViewer.Components.Shader;
 using ShaderViewer.Systems;
 using ShaderViewer.Systems.Gui;
 using ShaderViewer.Systems.Uniforms;

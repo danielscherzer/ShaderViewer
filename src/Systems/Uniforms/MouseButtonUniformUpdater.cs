@@ -17,7 +17,7 @@ internal class MouseButtonUniformUpdater : MouseUniformUpdater
 
 	public override bool ShouldBeActive(IEnumerable<string> currentUniformNames) => currentUniformNames.Contains(name);
 
-	public override void Update(float _, Components.Shader.Uniforms uniforms)
+	public override void Update(float _, Components.Uniforms uniforms)
 	{
 		var pos = scaleFactor * window.MousePosition;
 		uniforms.Set(name, new Vector3(pos.X, pos.Y, button));

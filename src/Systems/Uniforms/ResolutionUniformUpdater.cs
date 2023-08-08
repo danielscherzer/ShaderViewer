@@ -17,8 +17,7 @@ internal class ResolutionUniformUpdater : IUniformUpdater
 		{
 			renderResolution = windowResolution.CalcRenderResolution().ToVector2();
 		}
-		world.SubscribeWorldComponentAdded((World _, in WindowResolution resolution) => ChangeResolution(resolution));
-		world.SubscribeWorldComponentChanged((World _, in WindowResolution _, in WindowResolution resolution) => ChangeResolution(resolution));
+		world.SubscribeWorldComponentAddedOrChanged((World _, in WindowResolution resolution) => ChangeResolution(resolution));
 	}
 
 	public bool ShouldBeActive(IEnumerable<string> currentUniformNames)
@@ -35,7 +34,7 @@ internal class ResolutionUniformUpdater : IUniformUpdater
 		return false;
 	}
 
-	public void Update(float _, Components.Shader.Uniforms __)
+	public void Update(float _, Components.Uniforms uniforms)
 	{
 		uniforms.Set(currentName, renderResolution);
 	}

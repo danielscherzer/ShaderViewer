@@ -9,14 +9,14 @@ internal class TimeUniformSystem : ISystem<float>
 	private readonly World world;
 	private static readonly string[] names = new string[] { "iTime", "u_time", "iGlobalTime" };
 	private string currentName = names[2];
-	private Components.Shader.Uniforms uniforms;
+	private Components.Uniforms uniforms;
 
 	public bool IsEnabled { get; set; }
 
 	public TimeUniformSystem(World world)
 	{
 		this.world = world;
-		bool ShouldEnable(Components.Shader.Uniforms uniforms)
+		bool ShouldEnable(Components.Uniforms uniforms)
 		{
 			foreach (var name in names)
 			{
@@ -30,7 +30,7 @@ internal class TimeUniformSystem : ISystem<float>
 			}
 			return false;
 		}
-		world.SubscribeEntityComponentAddedOrChanged((in Entity _, in Components.Shader.Uniforms uniforms) => IsEnabled = ShouldEnable(uniforms));
+		world.SubscribeEntityComponentAddedOrChanged((in Entity _, in Components.Uniforms uniforms) => IsEnabled = ShouldEnable(uniforms));
 	}
 
 	public void Update(float deltaTime)

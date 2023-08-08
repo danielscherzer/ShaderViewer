@@ -3,7 +3,6 @@ using DefaultEcs.System;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 using ShaderViewer.Components;
-using ShaderViewer.Components.Shader;
 using Zenseless.OpenTK;
 
 namespace ShaderViewer.Systems;
@@ -27,12 +26,11 @@ internal sealed partial class ShaderDrawSystem : AEntitySetSystem<float>
 			var res = resolution.CalcRenderResolution();
 			frameBuffer.Attach(new Texture2D(res.X, res.Y), FramebufferAttachment.ColorAttachment0);
 		}
-		world.SubscribeWorldComponentAdded((World _, in WindowResolution resolution) => ChangeResolution(resolution));
-		world.SubscribeWorldComponentChanged((World _, in WindowResolution _, in WindowResolution resolution) => ChangeResolution(resolution));
+		world.SubscribeWorldComponentAddedOrChanged((World _, in WindowResolution resolution) => ChangeResolution(resolution));
 	}
 
 	[Update]
-	private void Update(in Entity entity, in ShaderProgram shaderProgram, in Components.Shader.Uniforms uniforms)
+	private void Update(in Entity entity, in ShaderProgram shaderProgram, in Components.Uniforms uniforms)
 	{
 		var shader = entity.Has<Log>() ? defaultShader : shaderProgram;
 		var localUniforms = uniforms;

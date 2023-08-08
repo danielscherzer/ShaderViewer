@@ -1,7 +1,8 @@
 ﻿using DefaultEcs;
-using ShaderViewer.Components.Shader;
+using ShaderViewer.Components;
 using System;
 using System.IO;
+using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 
 namespace ShaderViewer.Systems;
@@ -33,7 +34,7 @@ internal static class ReadShaderSourceSystem
 					var fileChangeSubscription = observable.Merge(CreateFileSystemWatcherObservable(fileName))
 						.Throttle(TimeSpan.FromSeconds(0.1f))
 						.Delay(TimeSpan.FromSeconds(0.1f))
-						//TODO: .ObserveOn(Scheduler.CurrentThread)
+						//.ObserveOn(Scheduler.CurrentThread)
 						.Subscribe(fileName => LoadFile(fileName));
 					entity.Set(fileChangeSubscription);
 				}

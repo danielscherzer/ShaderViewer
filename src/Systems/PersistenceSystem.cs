@@ -2,7 +2,6 @@
 using OpenTK.Mathematics;
 using OpenTK.Windowing.Desktop;
 using ShaderViewer.Components;
-using ShaderViewer.Components.Shader;
 using System.Linq;
 using Zenseless.OpenTK;
 using Zenseless.PersistentSettings;

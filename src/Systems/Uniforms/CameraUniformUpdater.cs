@@ -20,12 +20,12 @@ internal class CameraUniformUpdater : IUniformUpdater
 		window.KeyUp += args => StopMovement(args.Key);
 	}
 
-	public static void ResetCamera(Components.Shader.Uniforms uniforms)
+	public static void ResetCamera(Components.Uniforms uniforms)
 	{
 		Set(uniforms, Vector3.Zero, 0f, 0f);
 	}
 
-	public static void Set(Components.Shader.Uniforms uniforms, Vector3 position, float heading, float tilt)
+	public static void Set(Components.Uniforms uniforms, Vector3 position, float heading, float tilt)
 	{
 		uniforms.Set(camPosX, position.X);
 		uniforms.Set(camPosY, position.Y);
@@ -39,7 +39,7 @@ internal class CameraUniformUpdater : IUniformUpdater
 		return currentUniformNames.Contains(camPosX);
 	}
 
-	public void Update(float deltaTime, Components.Shader.Uniforms uniforms)
+	public void Update(float deltaTime, Components.Uniforms uniforms)
 	{
 		if (guiHasFocus()) return;
 		var x = uniforms.Get<float>(camPosX);

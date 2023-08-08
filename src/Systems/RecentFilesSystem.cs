@@ -1,6 +1,5 @@
 ﻿using DefaultEcs;
 using ShaderViewer.Components;
-using ShaderViewer.Components.Shader;
 using System.Linq;
 
 namespace ShaderViewer.Systems;

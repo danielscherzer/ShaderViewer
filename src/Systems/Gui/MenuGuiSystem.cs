@@ -4,7 +4,6 @@ using ImGuiNET;
 using OpenTK.Windowing.Desktop;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 using ShaderViewer.Components;
-using ShaderViewer.Components.Shader;
 using System;
 using System.Linq;
 

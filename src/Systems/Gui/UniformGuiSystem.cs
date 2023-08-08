@@ -19,7 +19,7 @@ internal sealed partial class UniformGuiSystem : AEntitySetSystem<float>
 	}
 
 	[Update]
-	private void Update(in Components.Shader.Uniforms uniforms)
+	private void Update(in Components.Uniforms uniforms)
 	{
 		if (!World.Get<ShowMenu>()) return;
 		float inputDelta = World.Get<InputDelta>();
