@@ -1,78 +1,66 @@
 ﻿using DefaultEcs;
+using DefaultEcs.System;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.Desktop;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 using ShaderViewer.Components;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace ShaderViewer.Systems.Uniforms;
 
-internal class CameraUniformSystem : UniformsSystem
+internal class CameraUniformSystem : ISystem<float>
 {
-	public CameraUniformSystem(GameWindow window, World world, Func<bool> guiHasFocus) : base(world)
+	public CameraUniformSystem(GameWindow window, World world, Func<bool> guiHasFocus)
 	{
+		World = world;
+
+		cameraPos = world.GetEntities().With<CameraPos>().AsSet();
+		cameraRot = world.GetEntities().With<CameraRot>().AsSet();
+
 		this.guiHasFocus = guiHasFocus;
 		this.window = window;
 		window.KeyDown += args => StartMovement(args.Key);
 		window.KeyUp += args => StopMovement(args.Key);
 	}
 
-	public static void ResetCamera(Components.Uniforms uniforms)
+	public bool IsEnabled { get; set; } = true;
+
+	public World World { get; }
+
+	private readonly EntitySet cameraPos;
+	private readonly EntitySet cameraRot;
+
+	public void Dispose()
 	{
-		Set(uniforms, Vector3.Zero, 0f, 0f);
+		cameraPos.Dispose();
+		cameraRot.Dispose();
 	}
 
-	public static void Set(Components.Uniforms uniforms, Vector3 position, float heading, float tilt)
+	public void Update(float deltaTime)
 	{
-		uniforms.Set(camPosX, position.X);
-		uniforms.Set(camPosY, position.Y);
-		uniforms.Set(camPosZ, position.Z);
-		uniforms.Set(camRotX, tilt);
-		uniforms.Set(camRotY, heading);
-	}
-
-	protected override bool ShouldEnable(Components.Uniforms uniforms)
-	{
-		var active = uniforms.Dictionary.ContainsKey(camPosX);
-		if (active)
-		{
-			World.Set(new ShowCameraReset());
-		}
-		else
-		{
-			World.Remove<ShowCameraReset>();
-		}
-		return active;
-	}
-
-	protected override void Update(float deltaTime, Components.Uniforms uniforms)
-	{
+		if (!IsEnabled) return;
 		if (guiHasFocus()) return;
-		var x = uniforms.Get<float>(camPosX);
-		var y = uniforms.Get<float>(camPosY);
-		var z = uniforms.Get<float>(camPosZ);
-		var tilt = uniforms.Get<float>(camRotX);
-		var heading = uniforms.Get<float>(camRotY);
-		Vector3 pos = new(x, y, z);
+		if (cameraPos.GetEntities().IsEmpty) return; //TODO: Make nicer
+		if (cameraRot.GetEntities().IsEmpty) return;
+		var posEntity = cameraPos.GetEntities()[0];
+		var rotEntity = cameraRot.GetEntities()[0];
+		var position = posEntity.Get<UniformValue>().Get<Vector3>();
+		var rotation = rotEntity.Get<UniformValue>().Get<Vector3>();
+
 		if (window.IsMouseButtonDown(MouseButton.Left))
 		{
 			var delta = Vector2.Divide(window.MouseState.Delta, window.ClientSize); // normalize
-			heading += 15 * delta.X;
-			tilt += -15 * delta.Y; // window y-axis goes downwards
+			rotation.Y += 15 * delta.X;
+			rotation.X += -15 * delta.Y; // window y-axis goes downwards
 		}
-		FirstPersonCamera.Update(deltaTime * movement, ref pos, heading, tilt);
-		Set(uniforms, pos, heading, tilt);
+		FirstPersonCamera.Update(deltaTime * movement, ref position, rotation.Y, rotation.X);
+		
+		posEntity.Set(new UniformValue(position));
+		rotEntity.Set(new UniformValue(rotation));
 	}
 
 	private Vector3 movement;
 
-	private const string camPosX = "iCamPosX";
-	private const string camPosY = "iCamPosY";
-	private const string camPosZ = "iCamPosZ";
-	private const string camRotX = "iCamRotX";
-	private const string camRotY = "iCamRotY";
 	private readonly GameWindow window;
 	private readonly Func<bool> guiHasFocus;
 

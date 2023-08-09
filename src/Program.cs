@@ -45,6 +45,7 @@ window.Resize += args => world.Set(world.Get<WindowResolution>() with { Width = 
 
 world.SubscribeRecentFilesSystem();
 world.SubscribeReadShaderSourceSystem();
+world.SubscribeUniformTaggerSystem(); //TODO: needs to come before parse because of ShowCameraReset
 world.SubscribeParseUniformsSystem();
 window.SubscribePersistenceSystem(world);
 

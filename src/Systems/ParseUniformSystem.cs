@@ -29,8 +29,11 @@ internal static class ParseUniformSystem
 
 	private static void Parse(World world, string shaderSource)
 	{
+		foreach (var entity in world.GetEntities().With<UniformName>().AsSet().GetEntities())
+		{
+			entity.Dispose();
+		}
 		var uniformDeclaration = GLSLhelper.Extract.Uniforms(GLSLhelper.Transformation.RemoveComments(shaderSource));
-		Components.Uniforms uniforms = new();
 		foreach ((string typeName, string name) in uniformDeclaration)
 		{
 			var type = GetType(typeName);
@@ -38,9 +41,10 @@ internal static class ParseUniformSystem
 			var instance = Activator.CreateInstance(type);
 			if (instance != null)
 			{
-				uniforms.Set(name, instance);
+				var uniform = world.CreateEntity();
+				uniform.Set(new UniformName(name));
+				uniform.Set(new UniformValue(instance));
 			}
 		}
-		world.Set(uniforms);
 	}
 }

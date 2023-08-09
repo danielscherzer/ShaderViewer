@@ -12,6 +12,7 @@ internal sealed partial class ShaderDrawSystem : AComponentSystem<float, ShaderP
 	private FrameBuffer frameBuffer;
 	private WindowResolution windowResolution;
 	private readonly ShaderProgram defaultShader;
+	private readonly EntitySet uniforms;
 
 	public ShaderDrawSystem(World world) : base(world)
 	{
@@ -27,22 +28,23 @@ internal sealed partial class ShaderDrawSystem : AComponentSystem<float, ShaderP
 			frameBuffer.Attach(new Texture2D(res.X, res.Y), FramebufferAttachment.ColorAttachment0);
 		}
 		world.SubscribeWorldComponentAddedOrChanged((World _, in WindowResolution resolution) => ChangeResolution(resolution));
+		uniforms = world.GetEntities().With<UniformName>().AsSet();
 	}
 
 	protected override void Update(float _, ref ShaderProgram shaderProgram)
 	{
 		var shader = World.Has<Log>() ? defaultShader : shaderProgram;
-		var localUniforms = World.Get<Components.Uniforms>();
 		void Draw()
 		{
 			shader.Bind(); // because of this bind we can use GL.Uniform* commands
 
-			foreach ((string name, object objValue) in localUniforms.NameValue())
+			foreach (var uniform in uniforms.GetEntities())
 			{
+				var name = uniform.Get<UniformName>().Name;
 				var loc = GL.GetUniformLocation(shader.Handle, name);
 				if (-1 != loc)
 				{
-					switch (objValue)
+					switch (uniform.Get<UniformValue>().Value)
 					{
 						case float value: GL.Uniform1(loc, value); break;
 						case Vector2 value: GL.Uniform2(loc, value); break;

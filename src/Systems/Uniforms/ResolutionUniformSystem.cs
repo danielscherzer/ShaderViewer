@@ -1,40 +1,15 @@
 ﻿using DefaultEcs;
-using OpenTK.Mathematics;
+using DefaultEcs.System;
 using ShaderViewer.Components;
 
 namespace ShaderViewer.Systems.Uniforms;
 
-internal class ResolutionUniformSystem : UniformsSystem
+internal sealed partial class ResolutionUniformSystem : AEntitySetSystem<float>
 {
-	public ResolutionUniformSystem(World world): base(world)
+	[Update]
+	private void Update(in Entity uniform, in RenderResolution _)
 	{
-		renderResolution = world.Get<WindowResolution>().CalcRenderResolution().ToVector2();
-
-		void ChangeResolution(WindowResolution windowResolution)
-		{
-			renderResolution = windowResolution.CalcRenderResolution().ToVector2();
-		}
-		world.SubscribeWorldComponentAddedOrChanged((World _, in WindowResolution resolution) => ChangeResolution(resolution));
+		var renderResolution = World.Get<WindowResolution>().CalcRenderResolution().ToVector2();
+		uniform.Set(new UniformValue(renderResolution));
 	}
-
-	protected override bool ShouldEnable(Components.Uniforms uniforms)
-	{
-		foreach (var name in names)
-		{
-			if (uniforms.Dictionary.ContainsKey(name))
-			{
-				currentName = name;
-				//this.uniforms = uniforms;
-				return true;
-			}
-
-		}
-		return false;
-	}
-
-	protected override void Update(float deltaTime, Components.Uniforms uniforms) => uniforms.Set(currentName, renderResolution);
-
-	private static readonly string[] names = new string[] { "u_resolution", "iResolution" };
-	private string currentName = names[0];
-	private Vector2 renderResolution;
 }

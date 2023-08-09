@@ -1,28 +1,31 @@
 ﻿using DefaultEcs;
+using DefaultEcs.System;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.Desktop;
 using OpenTK.Windowing.GraphicsLibraryFramework;
+using ShaderViewer.Components;
 
 namespace ShaderViewer.Systems.Uniforms;
 
-internal class MouseButtonUniformSystem : MouseUniformSystem
+internal sealed partial class MouseButtonUniformSystem : AEntitySetSystem<float>
 {
-	public MouseButtonUniformSystem(GameWindow window, World world) : base(window, world)
+	public MouseButtonUniformSystem(GameWindow window, World world) : base(world, CreateEntityContainer, true)
 	{
+		this.window = window;
 		window.MouseDown += _ => button = GetButtonDown(window.MouseState);
 		window.MouseUp += _ => button = GetButtonDown(window.MouseState);
 	}
 
-	protected override bool ShouldEnable(Components.Uniforms uniforms) => uniforms.Dictionary.ContainsKey(name);
-
-	protected override void Update(float _, Components.Uniforms uniforms)
+	[Update]
+	private void Update(in Entity uniform, in Mouse _)
 	{
+		var scaleFactor = World.Get<WindowResolution>().ScaleFactor;
 		var pos = scaleFactor * window.MousePosition;
-		uniforms.Set(name, new Vector3(pos.X, pos.Y, button));
+		uniform.Set(new UniformValue(new Vector3(pos.X, pos.Y, button)));
 	}
 
 	private int button;
-	private const string name = "iMouse";
+	private readonly GameWindow window;
 
 	private static int GetButtonDown(MouseState m) => m[MouseButton.Left] ? 1 : (m[MouseButton.Right] ? 3 : m[MouseButton.Middle] ? 2 : 0);
 }

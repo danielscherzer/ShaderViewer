@@ -1,29 +1,23 @@
 ﻿using DefaultEcs;
+using DefaultEcs.System;
 using OpenTK.Windowing.Desktop;
 using ShaderViewer.Components;
 
 namespace ShaderViewer.Systems.Uniforms;
 
-internal class MouseUniformSystem : UniformsSystem
+internal sealed partial class MouseUniformSystem : AEntitySetSystem<float>
 {
-	public MouseUniformSystem(GameWindow window, World world): base(world)
+	private readonly GameWindow window;
+
+	public MouseUniformSystem(GameWindow window, World world) : base(world, CreateEntityContainer, true)
 	{
 		this.window = window;
-		void ChangeScale(WindowResolution windowResolution)
-		{
-			scaleFactor = windowResolution.ScaleFactor;
-		}
-		world.SubscribeWorldComponentAddedOrChanged((World _, in WindowResolution resolution) => ChangeScale(resolution));
 	}
 
-	protected override bool ShouldEnable(Components.Uniforms uniforms) => uniforms.Dictionary.ContainsKey(name);
-
-	protected override void Update(float deltaTime, Components.Uniforms uniforms)
+	[Update]
+	private void Update(in Entity uniform, in Mouse _)
 	{
-		uniforms.Set(name, scaleFactor * window.MousePosition);
+		var scaleFactor = World.Get<WindowResolution>().ScaleFactor;
+		uniform.Set(new UniformValue(scaleFactor * window.MousePosition));
 	}
-
-	protected readonly GameWindow window;
-	protected float scaleFactor;
-	private const string name = "u_mouse";
 }
