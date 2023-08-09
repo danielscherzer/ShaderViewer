@@ -23,7 +23,7 @@ internal class CameraUniformSystem : ISystem<float>
 		window.KeyUp += args => StopMovement(args.Key);
 	}
 
-	public bool IsEnabled { get; set; } = true;
+	public bool IsEnabled { get; set; }
 
 	public World World { get; }
 
@@ -38,10 +38,8 @@ internal class CameraUniformSystem : ISystem<float>
 
 	public void Update(float deltaTime)
 	{
-		if (!IsEnabled) return;
+		if (cameraPos.GetEntities().IsEmpty || cameraRot.GetEntities().IsEmpty) return;
 		if (guiHasFocus()) return;
-		if (cameraPos.GetEntities().IsEmpty) return; //TODO: Make nicer
-		if (cameraRot.GetEntities().IsEmpty) return;
 		var posEntity = cameraPos.GetEntities()[0];
 		var rotEntity = cameraRot.GetEntities()[0];
 		var position = posEntity.Get<UniformValue>().Get<Vector3>();
@@ -50,10 +48,10 @@ internal class CameraUniformSystem : ISystem<float>
 		if (window.IsMouseButtonDown(MouseButton.Left))
 		{
 			var delta = Vector2.Divide(window.MouseState.Delta, window.ClientSize); // normalize
-			rotation.Y += 15 * delta.X;
-			rotation.X += -15 * delta.Y; // window y-axis goes downwards
+			rotation.Y += 15f * delta.X;
+			rotation.X += -15f * delta.Y; // window y-axis goes downwards
 		}
-		FirstPersonCamera.Update(deltaTime * movement, ref position, rotation.Y, rotation.X);
+		position = CalcPosition(deltaTime * movement, position, rotation.Y, rotation.X);
 		
 		posEntity.Set(new UniformValue(position));
 		rotEntity.Set(new UniformValue(rotation));
@@ -90,5 +88,18 @@ internal class CameraUniformSystem : ISystem<float>
 			case Keys.W: movement.Z = 0f; break;
 			case Keys.S: movement.Z = 0f; break;
 		}
+	}
+
+	private static Vector3 CalcPosition(in Vector3 movement, Vector3 position, float heading, float tilt)
+	{
+		Matrix3 CalcRotationMatrix()
+		{
+			Matrix3 rotX = Matrix3.CreateRotationX(-tilt);
+			Matrix3 rotY = Matrix3.CreateRotationY(heading);
+			return rotX * rotY;
+		}
+
+		Matrix3 rotation = CalcRotationMatrix();
+		return position + Vector3.TransformRow(movement, rotation);
 	}
 }

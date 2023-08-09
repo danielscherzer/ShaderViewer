@@ -21,7 +21,16 @@ world.Set(new RecentFiles());
 world.Set(new ShowMenu());
 world.Set(new WindowResolution());
 
-world.SubscribeWorldComponentAddedOrChanged((World _, in ShaderFile shaderFile) => window.Title = shaderFile.Name);
+world.SubscribeWorldComponentAddedOrChanged((World world, in ShaderFile shaderFile) =>
+{
+	window.Title = shaderFile.Name;
+	world.Set(new RecentFiles(world.Get<RecentFiles>().Names.Append(shaderFile.Name)));
+	ReadShaderSourceSystem.Load(world, shaderFile.Name);
+});
+world.SubscribeWorldComponentAddedOrChanged((World world, in SourceCode sourceCode) => ParseUniformSystem.Parse(world, sourceCode));
+
+world.SubscribeUniformTaggerSystem();
+window.SubscribePersistenceSystem(world);
 
 //TODO: render shader not behind main menu bar
 using SequentialSystem<float> systems = new(
@@ -30,6 +39,7 @@ using SequentialSystem<float> systems = new(
 	new MouseUniformSystem(window, world),
 	new MouseButtonUniformSystem(window, world),
 	new CameraUniformSystem(window, world, Gui.HasFocus),
+
 	new ShaderLoadSystem(world),
 	new ShaderDrawSystem(world),
 	new MenuGuiSystem(window, world),
@@ -43,11 +53,6 @@ window.RenderFrame += args => systems.Update((float)args.Time);
 window.RenderFrame += _ => window.SwapBuffers();
 window.Resize += args => world.Set(world.Get<WindowResolution>() with { Width = args.Width, Height = args.Height });
 
-world.SubscribeRecentFilesSystem();
-world.SubscribeReadShaderSourceSystem();
-world.SubscribeUniformTaggerSystem(); //TODO: needs to come before parse because of ShowCameraReset
-world.SubscribeParseUniformsSystem();
-window.SubscribePersistenceSystem(world);
 
 var fileName = Environment.GetCommandLineArgs().ElementAtOrDefault(1);
 if (fileName is not null) world.Set(new ShaderFile(fileName));

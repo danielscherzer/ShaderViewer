@@ -12,15 +12,15 @@ internal static class UniformTaggerSystem
 		{
 			switch (name)
 			{
-				case "iCamPos": entity.Set(new CameraPos()); break;
-				case "iCamRot": entity.Set(new CameraRot()); break;
+				case "iCamPos": entity.Set<CameraPos>(default); break;
+				case "iCamRot": entity.Set<CameraRot>(default); break;
 				case "u_resolution":
-				case "iResolution": entity.Set(new RenderResolution()); entity.Set(new ReadOnly()); break;
+				case "iResolution": entity.Set<RenderResolution>(default); entity.Set<ReadOnly>(default); break;
 				case "iTime":
 				case "u_time":
-				case "iGlobalTime": entity.Set(new Time()); break;
-				case "u_mouse": entity.Set(new Mouse()); entity.Set(new ReadOnly()); break;
-				case "iMouse": entity.Set(new IMouse()); entity.Set(new ReadOnly()); break;
+				case "iGlobalTime": entity.Set<Time>(default); break;
+				case "u_mouse": entity.Set<Mouse>(default); entity.Set<ReadOnly>(default); break;
+				case "iMouse": entity.Set<IMouse>(default); entity.Set<ReadOnly>(default); break;
 			}
 		}
 		world.SubscribeEntityComponentAddedOrChanged((in Entity entity, in UniformName uniformName) => Tag(entity, uniformName.Name));

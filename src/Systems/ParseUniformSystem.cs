@@ -7,11 +7,6 @@ namespace ShaderViewer.Systems;
 
 internal static class ParseUniformSystem
 {
-	public static void SubscribeParseUniformsSystem(this World world)
-	{
-		world.SubscribeWorldComponentAddedOrChanged((World world, in SourceCode sourceCode) => Parse(world, sourceCode));
-	}
-
 	private static Type? GetType(string typeName)
 	{
 		return typeName switch
@@ -27,7 +22,7 @@ internal static class ParseUniformSystem
 		};
 	}
 
-	private static void Parse(World world, string shaderSource)
+	internal static void Parse(World world, string shaderSource)
 	{
 		foreach (var entity in world.GetEntities().With<UniformName>().AsSet().GetEntities())
 		{
@@ -42,8 +37,8 @@ internal static class ParseUniformSystem
 			if (instance != null)
 			{
 				var uniform = world.CreateEntity();
-				uniform.Set(new UniformName(name));
 				uniform.Set(new UniformValue(instance));
+				uniform.Set(new UniformName(name));
 			}
 		}
 	}

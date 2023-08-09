@@ -8,45 +8,40 @@ namespace ShaderViewer.Systems;
 
 internal static class ReadShaderSourceSystem
 {
-	public static void SubscribeReadShaderSourceSystem(this World world)
+	internal static void Load(World world, string fileName)
 	{
-		void Load(string fileName)
+		void Reload(string fileName)
 		{
-			void LoadFile(string fileName)
+			try
 			{
-				try
+				var sourceCode = File.ReadAllText(fileName);
+				string dir = Path.GetDirectoryName(fileName) ?? "";
+				var observable = Observable.Empty<string>();
+				string GetIncludeCode(string includeName)
 				{
-					var sourceCode = File.ReadAllText(fileName);
-					string dir = Path.GetDirectoryName(fileName) ?? "";
-					var observable = Observable.Empty<string>();
-					string GetIncludeCode(string includeName)
-					{
-						var includeFile = Path.GetFullPath(Path.Combine(dir, includeName));
-						observable = observable.Merge(CreateFileSystemWatcherObservable(includeFile).Select(_ => fileName)); // observe include changes, but return main shader file name
-																															 //TODO: Test compile include and push errors to log
-						return File.ReadAllText(includeFile);
-					}
+					var includeFile = Path.GetFullPath(Path.Combine(dir, includeName));
+					observable = observable.Merge(CreateFileSystemWatcherObservable(includeFile).Select(_ => fileName)); // observe include changes, but return main shader file name
+																														 //TODO: Test compile include and push errors to log
+					return File.ReadAllText(includeFile);
+				}
 
-					sourceCode = GLSLhelper.Transformation.ExpandIncludes(sourceCode, GetIncludeCode);
-					world.Set(new SourceCode(sourceCode));
-					if (world.Has<IDisposable>()) world.Get<IDisposable>().Dispose();
-					var fileChangeSubscription = observable.Merge(CreateFileSystemWatcherObservable(fileName))
-						.Throttle(TimeSpan.FromSeconds(0.1f))
-						.Delay(TimeSpan.FromSeconds(0.1f))
-						//.ObserveOn(Scheduler.CurrentThread)
-						.Subscribe(fileName => LoadFile(fileName));
-					world.Set(fileChangeSubscription);
-				}
-				catch (Exception e)
-				{
-					world.Set(new Log(e.Message));
-				}
+				sourceCode = GLSLhelper.Transformation.ExpandIncludes(sourceCode, GetIncludeCode);
+				world.Set(new SourceCode(sourceCode));
+				if (world.Has<IDisposable>()) world.Get<IDisposable>().Dispose();
+				var fileChangeSubscription = observable.Merge(CreateFileSystemWatcherObservable(fileName))
+					.Throttle(TimeSpan.FromSeconds(0.1f))
+					.Delay(TimeSpan.FromSeconds(0.1f))
+					//.ObserveOn(Scheduler.CurrentThread)
+					.Subscribe(fileName => Reload(fileName));
+				world.Set(fileChangeSubscription);
 			}
-			if (!File.Exists(fileName)) return;
-			LoadFile(fileName);
+			catch (Exception e)
+			{
+				world.Set(new Log(e.Message));
+			}
 		}
-
-		world.SubscribeWorldComponentAddedOrChanged((World _, in ShaderFile shaderFile) => Load(shaderFile.Name));
+		if (!File.Exists(fileName)) return;
+		Reload(fileName);
 	}
 
 	private static IObservable<string> CreateFileSystemWatcherObservable(string fileName)
