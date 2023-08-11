@@ -23,7 +23,7 @@ internal sealed partial class ShaderLoadSystem : AComponentSystem<float, SourceC
 		try
 		{
 			if (World.Has<ShaderProgram>()) World.Get<ShaderProgram>().Dispose(); //TODO: Dispose should happen automatically with resource
-			World.Set(ShaderResource.CompileLink(sourceCode));
+			World.Set(Resources.CompileLink(sourceCode));
 			World.Remove<Log>();
 		}
 		catch (ShaderException e)

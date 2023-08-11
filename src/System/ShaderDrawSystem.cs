@@ -18,7 +18,7 @@ internal sealed partial class ShaderDrawSystem : AComponentSystem<float, ShaderP
 	{
 		frameBuffer = new(true);
 		windowResolution = world.Get<WindowResolution>();
-		defaultShader = ShaderResource.CompileLink(ShaderResource.defaultFragmentSourceCode);
+		defaultShader = Resources.CompileLink(Resources.defaultFragmentSourceCode);
 		void ChangeResolution(WindowResolution resolution)
 		{
 			windowResolution = resolution;

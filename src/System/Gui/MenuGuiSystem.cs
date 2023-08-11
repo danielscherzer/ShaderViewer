@@ -3,6 +3,7 @@ using DefaultEcs.System;
 using ImGuiNET;
 using ShaderViewer.Component;
 using System;
+using System.IO;
 using System.Linq;
 
 namespace ShaderViewer.System.Gui;
@@ -24,13 +25,20 @@ internal class MenuGuiSystem : ISystem<float>
 	{
 		if (world.Get<ShowMenu>())
 		{
+			var maxWidth = ImGui.GetWindowViewport().Size.X - 20f;
 			ImGui.BeginMainMenuBar();
 			if (ImGui.BeginMenu("File"))
 			{
 				var recentFiles = world.Get<RecentFiles>();
 				foreach (var fileName in recentFiles.Names.Reverse())
 				{
-					if (ImGui.MenuItem(fileName))
+					var shortFileName = fileName;
+					while(ImGui.CalcTextSize(shortFileName).X > maxWidth)
+					{
+						//TODO: shortFileName.IndexOf(Path.DirectorySeparatorChar);
+						shortFileName = "..." + shortFileName[(shortFileName.Length / 2)..];
+					}
+					if (ImGui.MenuItem(shortFileName))
 					{
 						world.Set(new ShaderFile(fileName));
 					}

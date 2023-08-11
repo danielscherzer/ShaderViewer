@@ -14,7 +14,7 @@ using Zenseless.OpenTK;
 //using GameWindow window = new(GameWindowSettings.Default, NativeWindowSettings.Default); //TODO: core mode
 using GameWindow window = new(GameWindowSettings.Default, ImmediateMode.NativeWindowSettings);
 window.VSync = OpenTK.Windowing.Common.VSyncMode.On;
-
+window.Icon = Resources.GetIcon();
 using World world = new();
 world.Set(new TimeScale());
 world.Set(new InputDelta());
@@ -23,7 +23,7 @@ world.Set(new ShowMenu());
 world.Set(new WindowResolution());
 void AddCommand(Keys keys, Func<string> text, Action action, string menu = "")
 {
-	//var entity
+	//TODO: Should we use a class for a command (some need construct and dispose functionality)
 	var entity = world.CreateEntity();
 	entity.Set(keys);
 	entity.Set(text);
@@ -63,6 +63,7 @@ using SequentialSystem<float> systems = new(
 	new LogGuiSystem(world),
 	new UniformGuiSystem(world),
 	new CommandGuiSystem(window, world),
+	new UpdateGuiSystem(window, world),
 	new Gui(window)
 );
 
