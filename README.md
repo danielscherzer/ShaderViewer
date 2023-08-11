@@ -1,6 +1,6 @@
 # Shader Viewer
 
-[![Build status](https://ci.appveyor.com/api/projects/status/fgb7600ufq6nj096?svg=true)](https://ci.appveyor.com/project/danielscherzer/shaderform2)
+[![Build status](https://ci.appveyor.com/api/projects/status/tnkhegkpjy5vyf6s?svg=true)](https://ci.appveyor.com/project/danielscherzer/shaderviewer)
 ---------------------------------------
 
 
