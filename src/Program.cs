@@ -2,6 +2,7 @@
 using DefaultEcs.System;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Windowing.Desktop;
+using OpenTK.Windowing.GraphicsLibraryFramework;
 using ShaderViewer.Component;
 using ShaderViewer.System;
 using ShaderViewer.System.Gui;
@@ -20,6 +21,22 @@ world.Set(new InputDelta());
 world.Set(new RecentFiles());
 world.Set(new ShowMenu());
 world.Set(new WindowResolution());
+void AddCommand(Keys keys, Func<string> text, Action action, string menu = "")
+{
+	//var entity
+	var entity = world.CreateEntity();
+	entity.Set(keys);
+	entity.Set(text);
+	entity.Set(action);
+	entity.Set(string.IsNullOrWhiteSpace(menu) ? "Window" : menu);
+}
+
+AddCommand(Keys.Space,
+	() => world.Get<TimeScale>() != 0f ? "Pause" : "Play",
+	() => world.Set(new TimeScale(world.Get<TimeScale>() != 0f ? 0f : 1f)), "Uniforms");
+AddCommand(Keys.LeftAlt, () => "Show Menu", () => world.Set(new ShowMenu(!world.Get<ShowMenu>())));
+AddCommand(Keys.Escape, () => "Exit", () => window.Close(), "File");
+
 
 world.SubscribeWorldComponentAddedOrChanged((World world, in ShaderFile shaderFile) =>
 {
@@ -28,7 +45,7 @@ world.SubscribeWorldComponentAddedOrChanged((World world, in ShaderFile shaderFi
 	ReadShaderSourceSystem.Load(world, shaderFile.Name);
 });
 world.SubscribeWorldComponentAddedOrChanged((World world, in SourceCode sourceCode) => ParseUniformSystem.Parse(world, sourceCode));
-
+//TODO: Check naming of some systems
 world.SubscribeUniformTaggerSystem();
 window.SubscribePersistenceSystem(world);
 

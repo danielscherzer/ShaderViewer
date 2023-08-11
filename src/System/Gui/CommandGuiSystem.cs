@@ -12,23 +12,10 @@ internal class CommandGuiSystem : ISystem<float>
 {
 	public CommandGuiSystem(GameWindow window, World world)
 	{
-		var query = world.GetEntities().With<Keys>().With<Action>();
-		keyBindings = query.AsMap<Keys>();
-		bindings = query.AsSet();
-		void AddCommand(Keys keys, Func<string> text, Action action)
-		{
-			//var entity
-			var entity = world.CreateEntity();
-			entity.Set(keys);
-			entity.Set(text);
-			entity.Set(action);
-		}
+		var query = world.GetEntities().With<Action>();
+		keyBindings = query.With<Keys>().AsMap<Keys>();
 
-		AddCommand(Keys.Space,
-			() => world.Get<TimeScale>() != 0f ? "Pause" : "Play",
-			() => world.Set(new TimeScale(world.Get<TimeScale>() != 0f ? 0f : 1f)));
-		AddCommand(Keys.LeftAlt, () => "Show Menu", () => world.Set(new ShowMenu(!world.Get<ShowMenu>())));
-		AddCommand(Keys.Escape, () => "Exit", () => window.Close());
+		bindings = query.With<string>().AsMultiMap<string>();
 
 		window.KeyDown += args =>
 		{
@@ -53,23 +40,28 @@ internal class CommandGuiSystem : ISystem<float>
 		if (world.Get<ShowMenu>())
 		{
 			ImGui.BeginMainMenuBar();
-			if (ImGui.BeginMenu("Window"))
+			foreach (var window in bindings.Keys)
 			{
-				foreach (var binding in bindings.GetEntities())
+				if (ImGui.BeginMenu(window))
 				{
-					var text = binding.Get<Func<string>>()();
-					if (ImGui.MenuItem(text, binding.Get<Keys>().ToString()))
+					//ImGui.Separator();
+					foreach (var binding in bindings[window])
 					{
-						binding.Get<Action>()();
+						var text = binding.Get<Func<string>>()();
+						var shortcut = binding.Has<Keys>() ? binding.Get<Keys>().ToString() : "";
+						if (ImGui.MenuItem(text, shortcut))
+						{
+							binding.Get<Action>()();
+						}
 					}
+					ImGui.EndMenu();
 				}
-				ImGui.EndMenu();
 			}
 			ImGui.EndMainMenuBar();
 		}
 	}
 
 	private readonly EntityMap<Keys> keyBindings;
-	private readonly EntitySet bindings;
+	private readonly EntityMultiMap<string> bindings;
 	private readonly World world;
 }
