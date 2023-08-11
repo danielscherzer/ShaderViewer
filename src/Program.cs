@@ -2,10 +2,10 @@
 using DefaultEcs.System;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Windowing.Desktop;
-using ShaderViewer.Components;
-using ShaderViewer.Systems;
-using ShaderViewer.Systems.Gui;
-using ShaderViewer.Systems.Uniforms;
+using ShaderViewer.Component;
+using ShaderViewer.System;
+using ShaderViewer.System.Gui;
+using ShaderViewer.System.Uniform;
 using System;
 using System.Linq;
 using Zenseless.OpenTK;
@@ -42,9 +42,10 @@ using SequentialSystem<float> systems = new(
 
 	new ShaderLoadSystem(world),
 	new ShaderDrawSystem(world),
-	new MenuGuiSystem(window, world),
+	new MenuGuiSystem(world),
 	new LogGuiSystem(world),
 	new UniformGuiSystem(world),
+	new CommandGuiSystem(window, world),
 	new Gui(window)
 );
 
@@ -52,7 +53,6 @@ window.RenderFrame += _ => GL.Clear(ClearBufferMask.ColorBufferBit); // if no sh
 window.RenderFrame += args => systems.Update((float)args.Time);
 window.RenderFrame += _ => window.SwapBuffers();
 window.Resize += args => world.Set(world.Get<WindowResolution>() with { Width = args.Width, Height = args.Height });
-
 
 var fileName = Environment.GetCommandLineArgs().ElementAtOrDefault(1);
 if (fileName is not null) world.Set(new ShaderFile(fileName));
