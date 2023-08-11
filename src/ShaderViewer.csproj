@@ -14,6 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoUpdateViaGitHubRelease" Version="0.1.63" />
     <PackageReference Include="DefaultEcs" Version="0.18.0-beta01" />
     <PackageReference Include="DefaultEcs.Analyzer" Version="0.17.0">
       <PrivateAssets>all</PrivateAssets>
