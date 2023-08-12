@@ -15,6 +15,7 @@ using Zenseless.OpenTK;
 using GameWindow window = new(GameWindowSettings.Default, ImmediateMode.NativeWindowSettings);
 window.VSync = OpenTK.Windowing.Common.VSyncMode.On;
 window.Icon = Resources.GetIcon();
+
 using World world = new();
 world.Set(new TimeScale());
 world.Set(new InputDelta());

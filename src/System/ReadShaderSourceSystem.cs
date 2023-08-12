@@ -37,7 +37,7 @@ internal static class ReadShaderSourceSystem
 			}
 			catch (Exception e)
 			{
-				world.Set(new Log(e.Message));
+				world.Set(new Log(e.Message)); //TODO: put into log format
 			}
 		}
 		if (!File.Exists(fileName)) return;
