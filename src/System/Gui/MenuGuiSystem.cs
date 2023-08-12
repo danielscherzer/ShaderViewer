@@ -70,6 +70,7 @@ internal class MenuGuiSystem : ISystem<float>
 			{
 				ImGui.EndMenu();
 			}
+			ImGui.MenuItem($"{MathF.Round(deltaTime * 1000f)}msec");
 			ImGui.EndMainMenuBar();
 		}
 	}
