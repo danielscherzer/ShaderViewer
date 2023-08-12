@@ -2,13 +2,11 @@
 using DefaultEcs.System;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Windowing.Desktop;
-using OpenTK.Windowing.GraphicsLibraryFramework;
+using ShaderViewer;
 using ShaderViewer.Component;
 using ShaderViewer.System;
 using ShaderViewer.System.Gui;
 using ShaderViewer.System.Uniform;
-using System;
-using System.Linq;
 using Zenseless.OpenTK;
 
 //using GameWindow window = new(GameWindowSettings.Default, NativeWindowSettings.Default); //TODO: core mode
@@ -16,40 +14,7 @@ using GameWindow window = new(GameWindowSettings.Default, ImmediateMode.NativeWi
 window.VSync = OpenTK.Windowing.Common.VSyncMode.On;
 window.Icon = Resources.GetIcon();
 
-using World world = new();
-world.Set(new TimeScale());
-world.Set(new InputDelta());
-world.Set(new RecentFiles());
-world.Set(new ShowMenu());
-world.Set(new WindowResolution());
-void AddCommand(Keys keys, Func<string> text, Action action, string menu = "")
-{
-	//TODO: Should we use a class for a command (some need construct and dispose functionality)
-	var entity = world.CreateEntity();
-	entity.Set(keys);
-	entity.Set(text);
-	entity.Set(action);
-	entity.Set(string.IsNullOrWhiteSpace(menu) ? "Window" : menu);
-}
-
-AddCommand(Keys.Space,
-	() => world.Get<TimeScale>() != 0f ? "Pause" : "Play",
-	() => world.Set(new TimeScale(world.Get<TimeScale>() != 0f ? 0f : 1f)), "Uniforms");
-//AddCommand(Keys.LeftAlt, () => "Show Menu", () => world.Set(new ShowMenu(!world.Get<ShowMenu>())));
-AddCommand(Keys.Escape, () => "Exit", () => window.Close(), "File");
-AddCommand(Keys.F11, () => "Fullscreen", () => window.WindowState = OpenTK.Windowing.Common.WindowState.Fullscreen);
-
-
-world.SubscribeWorldComponentAddedOrChanged((World world, in ShaderFile shaderFile) =>
-{
-	window.Title = shaderFile.Name;
-	world.Set(new RecentFiles(world.Get<RecentFiles>().Names.Append(shaderFile.Name)));
-	ReadShaderSourceSystem.Load(world, shaderFile.Name);
-});
-world.SubscribeWorldComponentAddedOrChanged((World world, in SourceCode sourceCode) => ParseUniformSystem.Parse(world, sourceCode));
-//TODO: Check naming of some systems
-world.SubscribeUniformTaggerSystem();
-window.SubscribePersistenceSystem(world);
+using World world = MyWorld.Create(window);
 
 //TODO: render shader not behind main menu bar
 using SequentialSystem<float> systems = new(
@@ -73,10 +38,5 @@ window.RenderFrame += _ => GL.Clear(ClearBufferMask.ColorBufferBit); // if no sh
 window.RenderFrame += args => systems.Update((float)args.Time);
 window.RenderFrame += _ => window.SwapBuffers();
 window.Resize += args => world.Set(world.Get<WindowResolution>() with { Width = args.Width, Height = args.Height });
-
-var fileName = Environment.GetCommandLineArgs().ElementAtOrDefault(1);
-if (fileName is not null) world.Set(new ShaderFile(fileName));
-
-window.FileDrop += args => world.Set(new ShaderFile(args.FileNames.First()));
 
 window.Run();
