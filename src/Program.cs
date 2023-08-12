@@ -35,8 +35,9 @@ void AddCommand(Keys keys, Func<string> text, Action action, string menu = "")
 AddCommand(Keys.Space,
 	() => world.Get<TimeScale>() != 0f ? "Pause" : "Play",
 	() => world.Set(new TimeScale(world.Get<TimeScale>() != 0f ? 0f : 1f)), "Uniforms");
-AddCommand(Keys.LeftAlt, () => "Show Menu", () => world.Set(new ShowMenu(!world.Get<ShowMenu>())));
+//AddCommand(Keys.LeftAlt, () => "Show Menu", () => world.Set(new ShowMenu(!world.Get<ShowMenu>())));
 AddCommand(Keys.Escape, () => "Exit", () => window.Close(), "File");
+AddCommand(Keys.F11, () => "Fullscreen", () => window.WindowState = OpenTK.Windowing.Common.WindowState.Fullscreen);
 
 
 world.SubscribeWorldComponentAddedOrChanged((World world, in ShaderFile shaderFile) =>

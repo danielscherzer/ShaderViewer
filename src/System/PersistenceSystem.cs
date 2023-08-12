@@ -17,20 +17,23 @@ internal static class PersistenceSystem
 		var monitorSize = new Vector2i(info.HorizontalResolution, info.VerticalResolution);
 		window.Size = monitorSize / 2;
 		window.Location = (monitorSize - window.Size) / 2;
-        Vector2i Clamp(global::System.Numerics.Vector2 vec) => (Vector2i)Vector2.ComponentMin(monitorSize, vec.ToOpenTK());
+		Vector2i Clamp(global::System.Numerics.Vector2 vec) => (Vector2i)Vector2.ComponentMin(monitorSize, vec.ToOpenTK());
 
 		PersistentSettings settings = new();
 		settings.AddFromGetterSetter("location", () => ((Vector2)window.Location).ToSystemNumerics(), v => window.Location = Clamp(v));
 		settings.AddFromGetterSetter("size", () => ((Vector2)window.Size).ToSystemNumerics(), v => window.Size = Clamp(v));
 		settings.AddFromGetterSetter("inputDelta", () => world.Get<InputDelta>(), v => world.Set(v));
 		settings.AddFromGetterSetter("recentFiles", () => world.Get<RecentFiles>(), v => world.Set(v));
-		//settings.AddFromGetterSetter("showMenu", () => world.Get<ShowMenu>(), v => world.Set(v));
 		settings.AddFromGetterSetter("resolution", () => world.Get<WindowResolution>(), v => world.Set(v));
 		settings.Load();
 
 		world.Set(new ShaderFile(world.Get<RecentFiles>().Names.LastOrDefault(string.Empty)));
 
-		window.Closing += _ => settings.Store();
+		window.Closing += _ =>
+		{
+			window.WindowState = OpenTK.Windowing.Common.WindowState.Normal; // do not save window size in fullscreen or maximized
+			settings.Store();
+		};
 
 
 		//var defaultFileName = Path.ChangeExtension(Assembly.GetCallingAssembly().Location, ".world");

@@ -22,10 +22,11 @@ internal sealed partial class ShaderDrawSystem : AComponentSystem<float, ShaderP
 		void ChangeResolution(WindowResolution resolution)
 		{
 			windowResolution = resolution;
-			frameBuffer.Dispose();
-			frameBuffer = new(true);
 			var res = resolution.CalcRenderResolution();
-			frameBuffer.Attach(new Texture2D(res.X, res.Y), FramebufferAttachment.ColorAttachment0);
+			FrameBuffer anotherFB = new(true);
+			anotherFB.Attach(new Texture2D(res.X, res.Y), FramebufferAttachment.ColorAttachment0);
+			(frameBuffer, anotherFB) = (anotherFB, frameBuffer);
+			anotherFB.Dispose();
 		}
 		world.SubscribeWorldComponentAddedOrChanged((World _, in WindowResolution resolution) => ChangeResolution(resolution));
 		uniforms = world.GetEntities().With<UniformName>().AsSet();

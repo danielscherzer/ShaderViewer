@@ -60,7 +60,14 @@ internal class MenuGuiSystem : ISystem<float>
 				var scaleFactor = windowResolution.ScaleFactor;
 				ImGui.DragFloat("Resolution scale", ref scaleFactor, 0.005f, 0.1f, 4f);
 				world.Set(windowResolution with { ScaleFactor = scaleFactor });
-				
+				ImGui.EndMenu();
+			}
+			if (ImGui.BeginMenu("Uniforms"))
+			{
+				ImGui.EndMenu();
+			}
+			if (ImGui.BeginMenu("Help"))
+			{
 				ImGui.EndMenu();
 			}
 			ImGui.EndMainMenuBar();
