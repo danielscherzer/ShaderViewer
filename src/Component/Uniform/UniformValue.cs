@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ShaderViewer.Component;
+namespace ShaderViewer.Component.Uniform;
 
 internal readonly record struct UniformValue(object Value)
 {

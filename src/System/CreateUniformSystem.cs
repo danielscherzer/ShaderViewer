@@ -1,11 +1,11 @@
 ﻿using DefaultEcs;
 using OpenTK.Mathematics;
-using ShaderViewer.Component;
+using ShaderViewer.Component.Uniform;
 using System;
 
 namespace ShaderViewer.System;
 
-internal static class ParseUniformSystem
+internal static class CreateUniformSystem
 {
 	private static Type? GetType(string typeName)
 	{
@@ -22,7 +22,7 @@ internal static class ParseUniformSystem
 		};
 	}
 
-	internal static void Parse(World world, string shaderSource)
+	internal static void ParseShaderSource(World world, string shaderSource)
 	{
 		foreach (var entity in world.GetEntities().With<UniformName>().AsSet().GetEntities())
 		{

@@ -4,6 +4,7 @@ using OpenTK.Mathematics;
 using OpenTK.Windowing.Desktop;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 using ShaderViewer.Component;
+using ShaderViewer.Component.Uniform;
 using System;
 
 namespace ShaderViewer.System.Uniform;
@@ -52,7 +53,7 @@ internal class CameraUniformSystem : ISystem<float>
 			rotation.X += -15f * delta.Y; // window y-axis goes downwards
 		}
 		position = CalcPosition(deltaTime * movement, position, rotation.Y, rotation.X);
-		
+
 		posEntity.Set(new UniformValue(position));
 		rotEntity.Set(new UniformValue(rotation));
 	}

@@ -3,6 +3,7 @@ using DefaultEcs.System;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 using ShaderViewer.Component;
+using ShaderViewer.Component.Uniform;
 using Zenseless.OpenTK;
 
 namespace ShaderViewer.System;
@@ -13,6 +14,7 @@ internal sealed partial class ShaderDrawSystem : AComponentSystem<float, ShaderP
 	private WindowResolution windowResolution;
 	private readonly ShaderProgram defaultShader;
 	private readonly EntitySet uniforms;
+	private readonly Query query;
 
 	public ShaderDrawSystem(World world) : base(world)
 	{
@@ -30,13 +32,17 @@ internal sealed partial class ShaderDrawSystem : AComponentSystem<float, ShaderP
 		}
 		world.SubscribeWorldComponentAddedOrChanged((World _, in WindowResolution resolution) => ChangeResolution(resolution));
 		uniforms = world.GetEntities().With<UniformName>().AsSet();
+		query = new(QueryTarget.TimeElapsed);
 	}
 
 	protected override void Update(float _, ref ShaderProgram shaderProgram)
 	{
+		//TODO: render shader not behind main menu bar
+		World.Set(query.ResultLong);
 		var shader = World.Has<Log>() ? defaultShader : shaderProgram;
 		void Draw()
 		{
+			query.Begin();
 			shader.Bind(); // because of this bind we can use GL.Uniform* commands
 
 			foreach (var uniform in uniforms.GetEntities())
@@ -55,6 +61,7 @@ internal sealed partial class ShaderDrawSystem : AComponentSystem<float, ShaderP
 				}
 			}
 			GL.DrawArrays(PrimitiveType.TriangleStrip, 0, 4);
+			query.End();
 		}
 		if (1f != windowResolution.ScaleFactor)
 		{

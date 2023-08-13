@@ -6,11 +6,11 @@ using System.Linq;
 using Zenseless.OpenTK;
 using Zenseless.PersistentSettings;
 
-namespace ShaderViewer.System;
+namespace ShaderViewer;
 
-internal static class PersistenceSystem
+internal static class Settings
 {
-	public static void SubscribePersistenceSystem(this GameWindow window, World world)
+	public static void Persist(GameWindow window, World world)
 	{
 		// set window postition/size relative to monitor size
 		var info = Monitors.GetMonitorFromWindow(window);
@@ -20,7 +20,7 @@ internal static class PersistenceSystem
 		Vector2i Clamp(global::System.Numerics.Vector2 vec) => (Vector2i)Vector2.ComponentMin(monitorSize, vec.ToOpenTK());
 
 		PersistentSettings settings = new();
-		settings.AddFromGetterSetter("location", () => ((Vector2)window.Location).ToSystemNumerics(), v => window.Location = Clamp(v));
+		settings.AddFromGetterSetter("location", () => ((Vector2)window.Location).ToSystemNumerics(), v => window.Location = Clamp(v)); // Vector2 does not serialize, because of self referencing properties
 		settings.AddFromGetterSetter("size", () => ((Vector2)window.Size).ToSystemNumerics(), v => window.Size = Clamp(v));
 		settings.AddFromGetterSetter("inputDelta", () => world.Get<InputDelta>(), v => world.Set(v));
 		settings.AddFromGetterSetter("recentFiles", () => world.Get<RecentFiles>(), v => world.Set(v));
@@ -34,7 +34,6 @@ internal static class PersistenceSystem
 			window.WindowState = OpenTK.Windowing.Common.WindowState.Normal; // do not save window size in fullscreen or maximized
 			settings.Store();
 		};
-
 
 		//var defaultFileName = Path.ChangeExtension(Assembly.GetCallingAssembly().Location, ".world");
 		//ISerializer serializer = new TextSerializer(); // or BinarySerializer

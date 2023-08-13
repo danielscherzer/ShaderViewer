@@ -3,6 +3,7 @@ using DefaultEcs.System;
 using ImGuiNET;
 using OpenTK.Mathematics;
 using ShaderViewer.Component;
+using ShaderViewer.Component.Uniform;
 using Zenseless.OpenTK.GUI;
 
 namespace ShaderViewer.System.Gui;
@@ -33,7 +34,6 @@ internal sealed partial class UniformGuiSystem : ISystem<float>
 
 	public void Update(float state)
 	{
-		if (!World.Get<ShowMenu>()) return;
 		float inputDelta = World.Get<InputDelta>();
 		ImGui.BeginMainMenuBar();
 		if (ImGui.BeginMenu("Uniforms"))
@@ -41,7 +41,7 @@ internal sealed partial class UniformGuiSystem : ISystem<float>
 			foreach (var uniform in uniforms.GetEntities())
 			{
 				var name = uniform.Get<UniformName>().Name;
-				if(uniform.Has<ReadOnly>())
+				if (uniform.Has<ReadOnly>())
 				{
 					//TODO: nicer formatting
 					ImGui.Text(uniform.Get<UniformValue>().Value.ToString());

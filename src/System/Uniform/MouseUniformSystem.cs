@@ -2,6 +2,7 @@
 using DefaultEcs.System;
 using OpenTK.Windowing.Desktop;
 using ShaderViewer.Component;
+using ShaderViewer.Component.Uniform;
 
 namespace ShaderViewer.System.Uniform;
 

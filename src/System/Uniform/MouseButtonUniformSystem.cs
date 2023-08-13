@@ -4,6 +4,7 @@ using OpenTK.Mathematics;
 using OpenTK.Windowing.Desktop;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 using ShaderViewer.Component;
+using ShaderViewer.Component.Uniform;
 
 namespace ShaderViewer.System.Uniform;
 

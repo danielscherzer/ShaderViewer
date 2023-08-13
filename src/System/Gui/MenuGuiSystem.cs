@@ -3,8 +3,8 @@ using DefaultEcs.System;
 using ImGuiNET;
 using ShaderViewer.Component;
 using System;
-using System.IO;
 using System.Linq;
+using System.Reflection;
 
 namespace ShaderViewer.System.Gui;
 
@@ -23,56 +23,59 @@ internal class MenuGuiSystem : ISystem<float>
 
 	public void Update(float deltaTime)
 	{
-		if (world.Get<ShowMenu>())
+		var maxWidth = ImGui.GetWindowViewport().Size.X - 20f;
+
+		ImGui.BeginMainMenuBar();
+		if (ImGui.BeginMenu("File"))
 		{
-			var maxWidth = ImGui.GetWindowViewport().Size.X - 20f;
-			ImGui.BeginMainMenuBar();
-			if (ImGui.BeginMenu("File"))
+			string ShortenFileName(string fileName)
 			{
-				var recentFiles = world.Get<RecentFiles>();
-				foreach (var fileName in recentFiles.Names.Reverse())
+				var shortFileName = fileName;
+				while (ImGui.CalcTextSize(shortFileName).X > maxWidth)
 				{
-					var shortFileName = fileName;
-					while(ImGui.CalcTextSize(shortFileName).X > maxWidth)
-					{
-						//TODO: shortFileName.IndexOf(Path.DirectorySeparatorChar);
-						shortFileName = "..." + shortFileName[(shortFileName.Length / 2)..];
-					}
-					if (ImGui.MenuItem(shortFileName))
-					{
-						world.Set(new ShaderFile(fileName));
-					}
+					shortFileName = "..." + shortFileName[10..];
 				}
-				//if(recentFiles.Names.Any()) ImGui.Separator();
-				ImGui.EndMenu();
+				return shortFileName;
 			}
-			if (ImGui.BeginMenu("Window"))
-			{
-				float inputDelta = world.Get<InputDelta>();
-				ImGui.DragFloat("Input delta", ref inputDelta, 0.005f, 0.005f, float.PositiveInfinity);
-				world.Set(new InputDelta(inputDelta));
 
-				float timeScale = world.Get<TimeScale>();
-				ImGui.DragFloat("Time scale", ref timeScale, 0.1f, -100f, 100f);
-				world.Set(new TimeScale(timeScale));
-
-				var windowResolution = world.Get<WindowResolution>();
-				var scaleFactor = windowResolution.ScaleFactor;
-				ImGui.DragFloat("Resolution scale", ref scaleFactor, 0.005f, 0.1f, 4f);
-				world.Set(windowResolution with { ScaleFactor = scaleFactor });
-				ImGui.EndMenu();
-			}
-			if (ImGui.BeginMenu("Uniforms"))
+			var recentFiles = world.Get<RecentFiles>();
+			foreach (var fileName in recentFiles.Names.Reverse())
 			{
-				ImGui.EndMenu();
+				if (ImGui.MenuItem(ShortenFileName(fileName)))
+				{
+					world.Set(new ShaderFile(fileName));
+				}
 			}
-			if (ImGui.BeginMenu("Help"))
-			{
-				ImGui.EndMenu();
-			}
-			ImGui.MenuItem($"{MathF.Round(deltaTime * 1000f)}msec");
-			ImGui.EndMainMenuBar();
+			//if(recentFiles.Names.Any()) ImGui.Separator();
+			ImGui.EndMenu();
 		}
+		if (ImGui.BeginMenu("Window"))
+		{
+			float inputDelta = world.Get<InputDelta>();
+			ImGui.DragFloat("Input delta", ref inputDelta, 0.005f, 0.005f, float.PositiveInfinity);
+			world.Set(new InputDelta(inputDelta));
+
+			float timeScale = world.Get<TimeScale>();
+			ImGui.DragFloat("Time scale", ref timeScale, 0.1f, -100f, 100f);
+			world.Set(new TimeScale(timeScale));
+
+			var windowResolution = world.Get<WindowResolution>();
+			var scaleFactor = windowResolution.ScaleFactor;
+			ImGui.DragFloat("Resolution scale", ref scaleFactor, 0.005f, 0.1f, 4f);
+			world.Set(windowResolution with { ScaleFactor = scaleFactor });
+			ImGui.EndMenu();
+		}
+		if (ImGui.BeginMenu("Uniforms"))
+		{
+			ImGui.EndMenu();
+		}
+		if (ImGui.BeginMenu("Info"))
+		{
+			ImGui.MenuItem($"Render time: {MathF.Round(world.Get<long>() / 1e6f)}msec");
+			ImGui.Text($"Version: {Assembly.GetExecutingAssembly().GetName().Version?.ToString()}");
+			ImGui.EndMenu();
+		}
+		ImGui.EndMainMenuBar();
 	}
 
 	private readonly World world;

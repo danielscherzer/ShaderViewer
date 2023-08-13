@@ -1,6 +1,7 @@
 ﻿using DefaultEcs;
 using DefaultEcs.System;
 using ShaderViewer.Component;
+using ShaderViewer.Component.Uniform;
 
 namespace ShaderViewer.System.Uniform;
 

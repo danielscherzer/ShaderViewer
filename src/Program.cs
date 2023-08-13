@@ -16,7 +16,6 @@ window.Icon = Resources.GetIcon();
 
 using World world = MyWorld.Create(window);
 
-//TODO: render shader not behind main menu bar
 using SequentialSystem<float> systems = new(
 	new TimeUniformSystem(world),
 	new ResolutionUniformSystem(world),
@@ -26,11 +25,12 @@ using SequentialSystem<float> systems = new(
 
 	new ShaderLoadSystem(world),
 	new ShaderDrawSystem(world),
-	new MenuGuiSystem(world),
+	new IsEnabledSystemDecorator<float>(() => world.Get<ShowMenu>(), new SequentialSystem<float>(
+		new MenuGuiSystem(world),
+		new UniformGuiSystem(world),
+		new CommandGuiSystem(window, world),
+		new UpdateGuiSystem(window))),
 	new LogGuiSystem(world),
-	new UniformGuiSystem(world),
-	new CommandGuiSystem(window, world),
-	new UpdateGuiSystem(window, world),
 	new Gui(window)
 );
 

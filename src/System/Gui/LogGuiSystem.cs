@@ -12,7 +12,7 @@ internal sealed partial class LogGuiSystem : AComponentSystem<float, Log>
 {
 	private ShaderLogLine[] lines = Array.Empty<ShaderLogLine>();
 
-	public LogGuiSystem(World world): base(world)
+	public LogGuiSystem(World world) : base(world)
 	{
 		world.SubscribeWorldComponentAddedOrChanged((World _, in Log log) =>
 		{
@@ -38,9 +38,9 @@ internal sealed partial class LogGuiSystem : AComponentSystem<float, Log>
 				{
 					ImGui.TableNextRow();
 					ImGui.TableNextColumn();
-					if(line.Type == MessageType.Error)
+					if (line.Type == MessageType.Error)
 					{
-                        ImGui.TextColored(new global::System.Numerics.Vector4(1f, 0f, 0f, 1f), $"{line.Type}");
+						ImGui.TextColored(new global::System.Numerics.Vector4(1f, 0f, 0f, 1f), $"{line.Type}");
 					}
 					else ImGui.Text($"{line.Type}");
 					ImGui.TableNextColumn();

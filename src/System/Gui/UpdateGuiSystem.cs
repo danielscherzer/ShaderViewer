@@ -1,9 +1,7 @@
 ﻿using AutoUpdateViaGitHubRelease;
-using DefaultEcs;
 using DefaultEcs.System;
 using ImGuiNET;
 using OpenTK.Windowing.Desktop;
-using ShaderViewer.Component;
 using System.IO;
 using System.Reflection;
 
@@ -11,10 +9,9 @@ namespace ShaderViewer.System.Gui;
 
 internal class UpdateGuiSystem : ISystem<float>
 {
-	public UpdateGuiSystem(GameWindow window, World world)
+	public UpdateGuiSystem(GameWindow window)
 	{
 		this.window = window;
-		this.world = world;
 		update = new Update();
 		var assembly = Assembly.GetExecutingAssembly();
 		var name = assembly.GetName().Name ?? string.Empty;
@@ -32,26 +29,22 @@ internal class UpdateGuiSystem : ISystem<float>
 
 	public void Update(float deltaTime)
 	{
-		if (world.Get<ShowMenu>())
+		ImGui.BeginMainMenuBar();
+		if (update.Available)
 		{
-			ImGui.BeginMainMenuBar();
-			if(update.Available)
+			if (ImGui.MenuItem("Update..."))
 			{
-				if(ImGui.MenuItem("Update..."))
+				var destinationDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+				if (destinationDir != null)
 				{
-					var destinationDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-					if (destinationDir != null)
-					{
-						update.StartInstall(destinationDir);
-						window.Close();
-					}
+					update.StartInstall(destinationDir);
+					window.Close();
 				}
 			}
-			ImGui.EndMainMenuBar();
 		}
+		ImGui.EndMainMenuBar();
 	}
 
 	private readonly GameWindow window;
-	private readonly World world;
 	private readonly Update update;
 }

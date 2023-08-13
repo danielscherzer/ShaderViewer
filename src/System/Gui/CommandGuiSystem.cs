@@ -24,7 +24,6 @@ internal class CommandGuiSystem : ISystem<float>
 				entity.Get<Action>()();
 			}
 		};
-		this.world = world;
 	}
 
 	public bool IsEnabled { get; set; } = true;
@@ -37,31 +36,27 @@ internal class CommandGuiSystem : ISystem<float>
 
 	public void Update(float deltaTime)
 	{
-		if (world.Get<ShowMenu>())
+		ImGui.BeginMainMenuBar();
+		foreach (var window in bindings.Keys)
 		{
-			ImGui.BeginMainMenuBar();
-			foreach (var window in bindings.Keys)
+			if (ImGui.BeginMenu(window))
 			{
-				if (ImGui.BeginMenu(window))
+				ImGui.Separator();
+				foreach (var binding in bindings[window])
 				{
-					//ImGui.Separator();
-					foreach (var binding in bindings[window])
+					var text = binding.Get<Func<string>>()();
+					var shortcut = binding.Has<Keys>() ? binding.Get<Keys>().ToString() : "";
+					if (ImGui.MenuItem(text, shortcut))
 					{
-						var text = binding.Get<Func<string>>()();
-						var shortcut = binding.Has<Keys>() ? binding.Get<Keys>().ToString() : "";
-						if (ImGui.MenuItem(text, shortcut))
-						{
-							binding.Get<Action>()();
-						}
+						binding.Get<Action>()();
 					}
-					ImGui.EndMenu();
 				}
+				ImGui.EndMenu();
 			}
-			ImGui.EndMainMenuBar();
 		}
+		ImGui.EndMainMenuBar();
 	}
 
 	private readonly EntityMap<Keys> keyBindings;
 	private readonly EntityMultiMap<string> bindings;
-	private readonly World world;
 }

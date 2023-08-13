@@ -3,24 +3,26 @@ using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Desktop;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 using ShaderViewer.Component;
-using ShaderViewer.System.Gui;
 using ShaderViewer.System;
+using ShaderViewer.System.Gui;
 using System;
 using System.IO;
 using System.Linq;
 
 namespace ShaderViewer
 {
-	internal class MyWorld
+    internal class MyWorld
 	{
 		internal static World Create(GameWindow window)
 		{
+			//TODO: window.IsEventDriven = true;
 			World world = new();
 			world.Set(new TimeScale());
 			world.Set(new InputDelta());
 			world.Set(new RecentFiles());
 			world.Set(new ShowMenu());
 			world.Set(new WindowResolution());
+
 			void AddCommand(Keys keys, Func<string> text, Action action, string menu = "")
 			{
 				//TODO: Should we use a class for a command (some need construct and dispose functionality)
@@ -47,10 +49,10 @@ namespace ShaderViewer
 				world.Set(new RecentFiles(world.Get<RecentFiles>().Names.Append(shaderFile.Name)));
 				ReadShaderSourceSystem.Load(world, shaderFile.Name);
 			});
-			world.SubscribeWorldComponentAddedOrChanged((World world, in SourceCode sourceCode) => ParseUniformSystem.Parse(world, sourceCode));
-			//TODO: Check naming of some systems
+			world.SubscribeWorldComponentAddedOrChanged((World world, in SourceCode sourceCode) => CreateUniformSystem.ParseShaderSource(world, sourceCode));
+			//TODO: Check naming of some "systems"
 			world.SubscribeUniformTaggerSystem();
-			window.SubscribePersistenceSystem(world);
+			Settings.Persist(window, world);
 
 			var fileName = Environment.GetCommandLineArgs().ElementAtOrDefault(1);
 			if (fileName is not null) world.Set(new ShaderFile(fileName));
