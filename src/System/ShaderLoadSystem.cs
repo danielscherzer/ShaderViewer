@@ -1,4 +1,5 @@
 ﻿using DefaultEcs;
+using DefaultEcs.Resource;
 using DefaultEcs.System;
 using ShaderViewer.Component;
 using Zenseless.OpenTK;
@@ -22,6 +23,8 @@ internal sealed partial class ShaderLoadSystem : AComponentSystem<float, SourceC
 	{
 		try
 		{
+			//TODO: new ManagedResource < string, ShaderProgram>();
+
 			if (World.Has<ShaderProgram>()) World.Get<ShaderProgram>().Dispose(); //TODO: Dispose should happen automatically with resource
 			World.Set(Resources.CompileLink(sourceCode));
 			World.Remove<Log>();

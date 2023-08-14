@@ -3,7 +3,6 @@ using DefaultEcs.System;
 using ImGuiNET;
 using OpenTK.Windowing.Desktop;
 using OpenTK.Windowing.GraphicsLibraryFramework;
-using ShaderViewer.Component;
 using System;
 
 namespace ShaderViewer.System.Gui;

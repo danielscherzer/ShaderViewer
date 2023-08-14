@@ -11,5 +11,5 @@ These are the changes to each version that has been released on GitHub releases.
 - [x] Initial release
 - [x] Reload shader files automatically from external editors
 - [x] Recently used shader list
-- [x] 3d Camera controls
+- [x] 3d Camera controls (wasd+mouse drag)+ qe for height
 

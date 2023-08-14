@@ -11,7 +11,7 @@ using System.Linq;
 
 namespace ShaderViewer
 {
-    internal class MyWorld
+	internal class MyWorld
 	{
 		internal static World Create(GameWindow window)
 		{
