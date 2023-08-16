@@ -15,7 +15,6 @@ namespace ShaderViewer
 	{
 		internal static World Create(GameWindow window)
 		{
-			//TODO: window.IsEventDriven = true;
 			World world = new();
 			world.Set(new TimeScale());
 			world.Set(new InputDelta());
@@ -43,16 +42,16 @@ namespace ShaderViewer
 				window.WindowState = window.WindowState == WindowState.Fullscreen ? WindowState.Normal : WindowState.Fullscreen;
 			});
 
+			//TODO: world.SubscribeWorldComponentAddedOrChanged((World world, in TimeScale timeScale) => window.IsEventDriven = timeScale == 0f);
+
 			world.SubscribeWorldComponentAddedOrChanged((World world, in ShaderFile shaderFile) =>
 			{
 				window.Title = Path.GetFileName(shaderFile.Name);
 				world.Set(new RecentFiles(world.Get<RecentFiles>().Names.Append(shaderFile.Name)));
+				//TODO: Check naming of some "systems"
 				ReadShaderSourceSystem.Load(world, shaderFile.Name);
 			});
 			world.SubscribeWorldComponentAddedOrChanged((World world, in SourceCode sourceCode) => CreateUniformSystem.ParseShaderSource(world, sourceCode));
-			//TODO: Check naming of some "systems"
-			world.SubscribeUniformTaggerSystem();
-			Settings.Persist(window, world);
 
 			var fileName = Environment.GetCommandLineArgs().ElementAtOrDefault(1);
 			if (fileName is not null) world.Set(new ShaderFile(fileName));

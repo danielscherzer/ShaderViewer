@@ -5,7 +5,9 @@ using OpenTK.Windowing.Desktop;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 using ShaderViewer.Component;
 using ShaderViewer.Component.Uniform;
+using ShaderViewer.System.Gui;
 using System;
+using System.Reactive.Disposables;
 
 namespace ShaderViewer.System.Uniform;
 
@@ -22,6 +24,11 @@ internal class CameraUniformSystem : ISystem<float>
 		this.window = window;
 		window.KeyDown += args => StartMovement(args.Key);
 		window.KeyUp += args => StopMovement(args.Key);
+
+		subscriptions = new CompositeDisposable(
+			world.SubscribeUniform("iCamPos", entity => entity.Set<CameraPos>(default)),
+			world.SubscribeUniform("iCamRot", entity => entity.Set<CameraRot>(default))
+		);
 	}
 
 	public bool IsEnabled { get; set; }
@@ -33,6 +40,7 @@ internal class CameraUniformSystem : ISystem<float>
 
 	public void Dispose()
 	{
+		subscriptions.Dispose();
 		cameraPos.Dispose();
 		cameraRot.Dispose();
 	}
@@ -62,6 +70,7 @@ internal class CameraUniformSystem : ISystem<float>
 
 	private readonly GameWindow window;
 	private readonly Func<bool> guiHasFocus;
+	private readonly CompositeDisposable subscriptions;
 
 	private void StartMovement(Keys key)
 	{

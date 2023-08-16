@@ -39,4 +39,6 @@ window.RenderFrame += args => systems.Update((float)args.Time);
 window.RenderFrame += _ => window.SwapBuffers();
 window.Resize += args => world.Set(world.Get<WindowResolution>() with { Width = args.Width, Height = args.Height });
 
+Settings.Persist(window, world); // call as late as possible because all subscriptions should be set-up (for instance uniform taggings)
+
 window.Run();
