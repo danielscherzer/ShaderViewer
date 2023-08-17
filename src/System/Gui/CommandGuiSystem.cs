@@ -36,12 +36,12 @@ internal class CommandGuiSystem : ISystem<float>
 	public void Update(float deltaTime)
 	{
 		ImGui.BeginMainMenuBar();
-		foreach (var window in bindings.Keys)
+		foreach (var menuName in bindings.Keys)
 		{
-			if (ImGui.BeginMenu(window))
+			if (ImGui.BeginMenu(menuName))
 			{
 				ImGui.Separator();
-				foreach (var binding in bindings[window])
+				foreach (var binding in bindings[menuName])
 				{
 					var text = binding.Get<Func<string>>()();
 					var shortcut = binding.Has<Keys>() ? binding.Get<Keys>().ToString() : "";
