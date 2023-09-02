@@ -27,7 +27,7 @@ internal sealed partial class MouseButtonUniformSystem : AEntitySetSystem<float>
 	}
 
 	[Update]
-	private void Update(in Entity uniform, in Mouse _)
+	private void Update(in Entity uniform, in IMouse _)
 	{
 		var scaleFactor = World.Get<WindowResolution>().ScaleFactor;
 		var pos = scaleFactor * window.MousePosition;

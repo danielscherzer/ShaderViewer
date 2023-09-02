@@ -41,23 +41,22 @@ internal sealed partial class UniformGuiSystem : ISystem<float>
 			foreach (var uniform in uniforms.GetEntities())
 			{
 				var name = uniform.Get<UniformName>().Name;
-				if (uniform.Has<ReadOnly>())
+				var readOnly = uniform.Has<ReadOnly>();
+				if (readOnly) ImGui.BeginDisabled();
+
+				void Update(object value)
 				{
-					//TODO: nicer formatting
-					ImGui.Text(uniform.Get<UniformValue>().Value.ToString());
-					ImGui.SameLine();
-					ImGui.Text(name);
+					if(!readOnly) uniform.Set(new UniformValue(value));
 				}
-				else
+				switch (uniform.Get<UniformValue>().Value)
 				{
-					switch (uniform.Get<UniformValue>().Value)
-					{
-						case float value: ImGui.DragFloat(name, ref value, inputDelta, float.NegativeInfinity, float.PositiveInfinity); uniform.Set(new UniformValue(value)); break;
-						case Vector2 value: ImGuiHelper.SliderFloat(name, ref value); uniform.Set(new UniformValue(value)); break;
-						case Vector3 value: ImGuiHelper.SliderFloat(name, ref value); uniform.Set(new UniformValue(value)); break;
-						case Vector4 value: ImGuiHelper.SliderFloat(name, ref value); uniform.Set(new UniformValue(value)); break;
-					}
+					case float value: ImGui.DragFloat(name, ref value, inputDelta, float.NegativeInfinity, float.PositiveInfinity); Update(value); break;
+					case Vector2 value: ImGuiHelper.SliderFloat(name, ref value); Update(value); break;
+					case Vector3 value: ImGuiHelper.SliderFloat(name, ref value); Update(value); break;
+					case Vector4 value: ImGuiHelper.SliderFloat(name, ref value); Update(value); break;
 				}
+
+				if (readOnly) ImGui.EndDisabled();
 			}
 			if (!cameraPos.GetEntities().IsEmpty && !cameraPos.GetEntities().IsEmpty)
 			{

@@ -71,7 +71,7 @@ internal class MenuGuiSystem : ISystem<float>
 		}
 		if (ImGui.BeginMenu("Info"))
 		{
-			ImGui.Text($"Render time: {MathF.Round(world.Get<long>() / 1e6f)}msec");
+			ImGui.Text($"Render time: {MathF.Round(world.Get<long>() / 1e6f, 2)}msec");
 			ImGui.Text($"Version: {Assembly.GetExecutingAssembly().GetName().Version?.ToString()}");
 			ImGui.EndMenu();
 		}
