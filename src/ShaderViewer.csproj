@@ -16,15 +16,15 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="AutoUpdateViaGitHubRelease" Version="0.1.63" />
+    <PackageReference Include="AutoUpdateViaGitHubRelease" Version="0.1.64" />
     <PackageReference Include="DefaultEcs" Version="0.18.0-beta01" />
     <PackageReference Include="DefaultEcs.Analyzer" Version="0.17.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="GLSLhelper" Version="0.3.61" />
+    <PackageReference Include="GLSLhelper" Version="0.3.63" />
     <PackageReference Include="System.Reactive" Version="6.0.0" />
-    <PackageReference Include="Zenseless.OpenTK.GUI" Version="0.1.22" />
+    <PackageReference Include="Zenseless.OpenTK.GUI" Version="0.1.23" />
     <PackageReference Include="Zenseless.PersistentSettings" Version="0.1.10" />
   </ItemGroup>
 
