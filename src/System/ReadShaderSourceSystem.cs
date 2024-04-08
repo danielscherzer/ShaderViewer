@@ -8,7 +8,7 @@ namespace ShaderViewer.System;
 
 internal static class ReadShaderSourceSystem
 {
-	internal static void Load(World world, string fileName)
+	internal static bool Load(World world, string fileName)
 	{
 		void Reload(string fileName)
 		{
@@ -40,8 +40,9 @@ internal static class ReadShaderSourceSystem
 				world.Set(new Log(e.Message)); //TODO: put into log format
 			}
 		}
-		if (!File.Exists(fileName)) return;
+		if (!File.Exists(fileName)) return false;
 		Reload(fileName);
+		return true;
 	}
 
 	private static IObservable<string> CreateFileSystemWatcherObservable(string fileName)

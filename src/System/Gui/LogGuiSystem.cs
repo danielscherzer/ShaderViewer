@@ -10,7 +10,7 @@ namespace ShaderViewer.System.Gui;
 
 internal sealed partial class LogGuiSystem : AComponentSystem<float, Log>
 {
-	private ShaderLogLine[] lines = Array.Empty<ShaderLogLine>();
+	private ShaderLogLine[] lines = [];
 
 	public LogGuiSystem(World world) : base(world)
 	{
@@ -24,6 +24,7 @@ internal sealed partial class LogGuiSystem : AComponentSystem<float, Log>
 	protected override void Update(float elapsedTime, ref Log _)
 	{
 		//TODO: Nicer output with warning/error categories
+		//TODO: If parsing was not possible do not write "Could not parse message..."
 		if (ImGui.Begin("Shader Log", ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoScrollbar))
 		{
 			var flags = ImGuiTableFlags.Sortable | ImGuiTableFlags.Borders | ImGuiTableFlags.ScrollY | ImGuiTableFlags.RowBg;

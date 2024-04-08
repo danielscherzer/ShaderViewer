@@ -1,20 +1,17 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace ShaderViewer.Component;
 
-internal readonly struct RecentFiles
+internal readonly struct RecentFiles(IEnumerable<string> names)
 {
-	public RecentFiles() : this(Enumerable.Empty<string>()) { }
+	public RecentFiles() : this([]) { }
 
-	public RecentFiles(IEnumerable<string> names)
-	{
-		Names = names
+	public IEnumerable<string> Names { get; } = names
 			.Where(name => !string.IsNullOrWhiteSpace(name)) // no empty names
 			.Reverse().Distinct().Reverse() // distinct elements, but from the end
 			.TakeLast(20) // only last 20 elements
+			.Where(File.Exists)
 			.ToArray(); // make a copy
-	}
-
-	public IEnumerable<string> Names { get; }
 }

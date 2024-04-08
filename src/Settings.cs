@@ -25,6 +25,7 @@ internal static class Settings
 		settings.AddFromGetterSetter("inputDelta", () => world.Get<InputDelta>(), v => world.Set(v));
 		settings.AddFromGetterSetter("recentFiles", () => world.Get<RecentFiles>(), v => world.Set(v));
 		settings.AddFromGetterSetter("resolution", () => world.Get<WindowResolution>(), v => world.Set(v));
+		settings.AddFromGetterSetter("alwaysOnTop", () => world.Get<AlwaysOnTop>(), v => world.Set(v));
 		settings.Load();
 
 		world.Set(new ShaderFile(world.Get<RecentFiles>().Names.LastOrDefault(string.Empty)));

@@ -51,6 +51,10 @@ internal class MenuGuiSystem : ISystem<float>
 		}
 		if (ImGui.BeginMenu("Window"))
 		{
+			bool alwaysOnTop = world.Get<AlwaysOnTop>();
+			ImGui.Checkbox("Always on top", ref alwaysOnTop);
+			world.Set(new AlwaysOnTop(alwaysOnTop));
+
 			float inputDelta = world.Get<InputDelta>();
 			ImGui.DragFloat("Input delta", ref inputDelta, 0.005f, 0.005f, float.PositiveInfinity);
 			world.Set(new InputDelta(inputDelta));
