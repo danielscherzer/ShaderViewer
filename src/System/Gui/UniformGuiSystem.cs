@@ -46,7 +46,7 @@ internal sealed partial class UniformGuiSystem : ISystem<float>
 
 				void Update(object value)
 				{
-					if(!readOnly) uniform.Set(new UniformValue(value));
+					if (!readOnly) uniform.Set(new UniformValue(value));
 				}
 				switch (uniform.Get<UniformValue>().Value)
 				{

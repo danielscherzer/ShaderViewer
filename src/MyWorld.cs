@@ -4,7 +4,6 @@ using OpenTK.Windowing.Desktop;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 using ShaderViewer.Component;
 using ShaderViewer.System;
-using ShaderViewer.System.Gui;
 using System;
 using System.IO;
 using System.Linq;
@@ -52,9 +51,6 @@ namespace ShaderViewer
 				ReadShaderSourceSystem.Load(world, shaderFile.Name);
 			});
 			world.SubscribeWorldComponentAddedOrChanged((World world, in SourceCode sourceCode) => CreateUniformSystem.ParseShaderSource(world, sourceCode));
-
-			var fileName = Environment.GetCommandLineArgs().ElementAtOrDefault(1);
-			if (fileName is not null) world.Set(new ShaderFile(fileName));
 
 			window.FileDrop += args => world.Set(new ShaderFile(args.FileNames.First()));
 

@@ -18,7 +18,7 @@ internal class IsEnabledSystemDecorator<T> : ISystem<T>
 
 	public void Update(T state)
 	{
-		if(isEnabled()) System.Update(state);
+		if (isEnabled()) System.Update(state);
 	}
 
 	private readonly Func<bool> isEnabled;

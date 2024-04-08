@@ -7,6 +7,8 @@ using ShaderViewer.Component;
 using ShaderViewer.System;
 using ShaderViewer.System.Gui;
 using ShaderViewer.System.Uniform;
+using System;
+using System.Linq;
 using Zenseless.OpenTK;
 
 //using GameWindow window = new(GameWindowSettings.Default, NativeWindowSettings.Default); //TODO: core mode
@@ -40,5 +42,8 @@ window.RenderFrame += _ => window.SwapBuffers();
 window.Resize += args => world.Set(world.Get<WindowResolution>() with { Width = args.Width, Height = args.Height });
 
 Settings.Persist(window, world); // call as late as possible because all subscriptions should be set-up (for instance uniform taggings)
+
+var fileName = args.ElementAtOrDefault(1);
+if (fileName is not null) world.Set(new ShaderFile(fileName));
 
 window.Run();
