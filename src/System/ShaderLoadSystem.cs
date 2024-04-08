@@ -26,7 +26,7 @@ internal sealed partial class ShaderLoadSystem : AComponentSystem<float, SourceC
 			World.Set(Resources.CompileLink(sourceCode));
 			World.Remove<Log>();
 		}
-		catch (ShaderException e)
+		catch (OpenGLException e)
 		{
 			World.Set(new Log(e.Message));
 		}
