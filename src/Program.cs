@@ -43,7 +43,7 @@ window.Resize += args => world.Set(world.Get<WindowResolution>() with { Width = 
 
 Settings.Persist(window, world); // call as late as possible because all subscriptions should be set-up (for instance uniform taggings)
 
-var fileName = args.ElementAtOrDefault(1);
+var fileName = Environment.GetCommandLineArgs().ElementAtOrDefault(1);
 if (fileName is not null) world.Set(new ShaderFile(fileName));
 
 window.Run();

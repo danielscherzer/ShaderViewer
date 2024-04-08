@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <RootNamespace>ShaderViewer</RootNamespace>
     <ApplicationIcon>CornellBox.ico</ApplicationIcon>
     <Version>0.0.1</Version>
@@ -22,7 +22,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="GLSLhelper" Version="0.3.63" />
+    <PackageReference Include="GLSLhelper" Version="0.3.67" />
     <PackageReference Include="System.Reactive" Version="6.0.0" />
     <PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
     <PackageReference Include="Zenseless.OpenTK.GUI" Version="0.1.25" />
