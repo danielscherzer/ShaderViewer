@@ -27,7 +27,7 @@ internal static class Resources
 		IntPtr areaPointer = image.GetPixelsUnsafe().GetAreaPointer(0, 0, image.Width, image.Height);
 		byte[] managedArray = new byte[image.Width * image.Height * 4];
 		Marshal.Copy(areaPointer, managedArray, 0, managedArray.Length);
-		var img = new Image(image.Width, image.Height, managedArray);
+		var img = new Image((int)image.Width, (int)image.Height, managedArray);
 		return new WindowIcon(img);
 	}
 }

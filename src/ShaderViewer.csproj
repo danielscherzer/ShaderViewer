@@ -24,9 +24,9 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="GLSLhelper" Version="0.3.67" />
-    <PackageReference Include="System.Reactive" Version="6.0.0" />
+    <PackageReference Include="System.Reactive" Version="6.0.1" />
     <PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
-    <PackageReference Include="Zenseless.OpenTK.GUI" Version="0.1.25" />
+    <PackageReference Include="Zenseless.OpenTK.GUI" Version="0.1.27" />
     <PackageReference Include="Zenseless.PersistentSettings" Version="0.1.10" />
   </ItemGroup>
 

@@ -8,13 +8,8 @@ using System.Reflection;
 
 namespace ShaderViewer.System.Gui;
 
-internal class MenuGuiSystem : ISystem<float>
+internal class MenuGuiSystem(World world) : ISystem<float>
 {
-	public MenuGuiSystem(World world)
-	{
-		this.world = world;
-	}
-
 	public bool IsEnabled { get; set; } = true;
 
 	public void Dispose()
@@ -82,5 +77,5 @@ internal class MenuGuiSystem : ISystem<float>
 		ImGui.EndMainMenuBar();
 	}
 
-	private readonly World world;
+	private readonly World world = world;
 }
