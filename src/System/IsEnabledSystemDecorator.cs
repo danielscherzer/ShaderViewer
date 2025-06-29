@@ -1,16 +1,9 @@
 ﻿using DefaultEcs.System;
 using System;
 
-internal class IsEnabledSystemDecorator<T> : ISystem<T>
+internal class IsEnabledSystemDecorator<T>(Func<bool> isEnabled, ISystem<T> system) : ISystem<T>
 {
-
-	public IsEnabledSystemDecorator(Func<bool> isEnabled, ISystem<T> system)
-	{
-		this.isEnabled = isEnabled;
-		System = system;
-	}
-
-	public ISystem<T> System { get; }
+	public ISystem<T> System { get; } = system;
 
 	public bool IsEnabled { get => isEnabled(); set => throw new ArgumentException($"{nameof(IsEnabled)} should not be written to in a {nameof(IsEnabledSystemDecorator<T>)}"); }
 
@@ -20,6 +13,4 @@ internal class IsEnabledSystemDecorator<T> : ISystem<T>
 	{
 		if (isEnabled()) System.Update(state);
 	}
-
-	private readonly Func<bool> isEnabled;
 }

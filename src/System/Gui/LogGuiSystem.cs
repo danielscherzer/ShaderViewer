@@ -3,8 +3,6 @@ using DefaultEcs.System;
 using GLSLhelper;
 using ImGuiNET;
 using ShaderViewer.Component;
-using System;
-using System.Linq;
 
 namespace ShaderViewer.System.Gui;
 
@@ -17,7 +15,7 @@ internal sealed partial class LogGuiSystem : AComponentSystem<float, Log>
 		world.SubscribeWorldComponentAddedOrChanged((World _, in Log log) =>
 		{
 			var parser = new ShaderLogParser(log.Message);
-			lines = parser.Lines.ToArray();
+			lines = [.. parser.Lines];
 		});
 	}
 

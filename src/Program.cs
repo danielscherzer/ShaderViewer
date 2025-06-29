@@ -10,6 +10,7 @@ using ShaderViewer.System.Uniform;
 using System;
 using System.Linq;
 using Zenseless.OpenTK;
+using Zenseless.OpenTK.GUI;
 
 //using GameWindow window = new(GameWindowSettings.Default, NativeWindowSettings.Default); //TODO: core mode
 using GameWindow window = new(GameWindowSettings.Default, ImmediateMode.NativeWindowSettings);
@@ -23,7 +24,7 @@ using SequentialSystem<float> systems = new(
 	new ResolutionUniformSystem(world),
 	new MouseUniformSystem(window, world),
 	new MouseButtonUniformSystem(window, world),
-	new CameraUniformSystem(window, world, Gui.HasFocus),
+	new CameraUniformSystem(window, world, GuiWindow.HasGuiFocus),
 
 	new ShaderLoadSystem(world),
 	new ShaderDrawSystem(world),
